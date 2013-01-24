@@ -9,6 +9,9 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /assets/bootstrap
+  static_dir: assets/bootstrap
+
 - url: .*
   script: main.app
 

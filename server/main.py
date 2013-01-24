@@ -23,11 +23,11 @@ import MySQLdb
 def insertUserIntoDB(num,username,email,password):
     db = MySQLdb.connect(host = "localhost",
                         user = "root",
-                        passwd ="123",
+                        passwd ="",
                         db ="scheduleplanner")
     cur = db.cursor()
 
-    cur.execute("INSERT INTO user VALUES (%s,%s, %s, sha1(%s), NULL)", (int(num), username, email, password))
+    cur.execute("INSERT INTO user (Name, Email, Password, Active_SID) VALUES (%s, %s, sha1(%s), NULL)", (username, email, password))
     db.commit()
 
 def escape(txt):
@@ -46,7 +46,7 @@ def valid_email(email):
 class WelcomeHandler(webapp2.RequestHandler):
     def get(self):
         welcome = """
-        <h2>Hello. Welcome to this app. You have signed up%s</h2>
+        <h2>Hello! Thank you for registering to Schedule Planner, %s!</h2>
         """
         username = self.request.get('username')
         self.response.out.write(welcome % escape(username))
@@ -97,7 +97,7 @@ class SignupHandler(webapp2.RequestHandler):
         inserts['email'] = escape(email)
 
         if is_valid:
-            insertUserIntoDB(4,username, email, password)
+            insertUserIntoDB(5,username, email, password)
             self.redirect('/signup/welcome?username='+username)
         else:
             self.response.out.write(signup_form % inserts)
@@ -118,58 +118,49 @@ homeform ="""
 <a href="/signup">Signup Form</a>
 """
 signup_form = """
-<h2>Signup Form</h2>
-<form method="post">
-  <table>
-    <tr>
-      <td class="label">
-        Username
-      </td>
-      <td>
-        <input type="text" name="username" value="%(username)s">
-      </td>
-      <td class="error">
-        <span style="color: red">%(username_err)s</span>
-      </td>
-    </tr>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#">Schedule Planner</a>
+    </div>
+  </div>
+</div>
+<div class="container content">
+  <div class="row">
+    <h2>Signup Form</h2>
+  </div>
+  <div class="row">
+    <div class="container">
+      <form method="post">
+        <fieldset>
+          <label>Username</label>
+          <input type="text" name="username" value="%(username)s">
+          <span style="color: red">%(username_err)s</span>
 
-    <tr>
-      <td class="label">
-        Password
-      </td>
-      <td>
-        <input type="password" name="password" value="">
-      </td>
-      <td class="error">
-        <span style="color: red">%(password_err)s</span>
-      </td>
-    </tr>
+          <label>Password</label>
+          <input type="password" name="password" value="">
+          <span style="color: red">%(password_err)s</span>
 
-    <tr>
-      <td class="label">
-        Verify Password
-      </td>
-      <td>
-        <input type="password" name="verify" value="">
-      </td>
-      <td class="error">
-        <span style="color: red">%(verify_err)s</span>
-      </td>
-    </tr>
+          <label>Verify Password</label>
+          <input type="password" name="verify" value="">
+          <span style="color: red">%(verify_err)s</span>
 
-    <tr>
-      <td class="label">
-        Email (optional)
-      </td>
-      <td>
-        <input type="text" name="email" value="%(email)s">
-      </td>
-      <td class="error">
-        <span style="color: red">%(email_err)s</span>
-      </td>
-    </tr>
-  </table>
+          <label>Email (optional)</label>
+          <input type="text" name="email" value="%(email)s">
+          <span style="color: red">%(email_err)s</span>
 
-  <input type="submit">
-</form>
+          <br/>
+          <input class="btn" type="submit">
+      </form>
+    </div>
+  </div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
 """
