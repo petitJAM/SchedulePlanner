@@ -28,7 +28,7 @@ def insertUserIntoDB(num,username,email,password):
     cur = db.cursor()
 
     cur.execute("INSERT INTO user VALUES (%s,%s, %s, sha1(%s), NULL)", (int(num), username, email, password))
-
+    db.commit()
 
 def escape(txt):
     #Escape out special HTML characters in string
