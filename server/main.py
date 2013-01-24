@@ -20,15 +20,25 @@ import MySQLdb
 
 
 
-def insertUserIntoDB(num,username,email,password):
+def insertUserIntoDB(username,email,password):
     db = MySQLdb.connect(host = "localhost",
                         user = "root",
                         passwd ="",
                         db ="scheduleplanner")
     cur = db.cursor()
 
-    cur.execute("INSERT INTO user (Name, Email, Password, Active_SID) VALUES (%s, %s, sha1(%s), NULL)", (username, email, password))
+    cur.execute("INSERT INTO user (Name, Email, Password, Active_SID) VALUES (%s, %s, sha1(%s), NULL)", (username, email, username+password))
     db.commit()
+
+def getAllUsers():
+    db = MySQLdb.connect(host = "localhost",
+                        user = "root",
+                        passwd ="",
+                        db ="scheduleplanner")
+    cur = db.cursor()
+
+    cur.execute("SELECT Name, Email FROM user")
+    return cur.fetchall()
 
 def escape(txt):
     #Escape out special HTML characters in string
@@ -45,9 +55,6 @@ def valid_email(email):
 
 class WelcomeHandler(webapp2.RequestHandler):
     def get(self):
-        welcome = """
-        <h2>Hello! Thank you for registering to Schedule Planner, %s!</h2>
-        """
         username = self.request.get('username')
         self.response.out.write(welcome % escape(username))
 
@@ -65,7 +72,6 @@ class SignupHandler(webapp2.RequestHandler):
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
                     'username':'', 'email':''}
        
-
         username = self.request.get('username')
         password = self.request.get('password')
         verify = self.request.get('verify')
@@ -82,7 +88,6 @@ class SignupHandler(webapp2.RequestHandler):
         #     if not valid_email(email):
         #         inserts['email_err'] = "That's not a valid email."
 
-    
         is_valid = True
 
         # If any error message was set, then inserts[key]!=''
@@ -97,11 +102,18 @@ class SignupHandler(webapp2.RequestHandler):
         inserts['email'] = escape(email)
 
         if is_valid:
-            insertUserIntoDB(5,username, email, password)
+            insertUserIntoDB(username, email, password)
             self.redirect('/signup/welcome?username='+username)
         else:
             self.response.out.write(signup_form % inserts)
 
+class UsersListHandler(webapp2.RequestHandler):
+    def get(self):
+        users = getAllUsers()
+        userstr = ""
+        for u in users:
+            userstr += "<li>" + u[0] + ", " + u[1] + "</li>"
+        self.response.out.write(userslist % userstr)
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -111,11 +123,36 @@ class MainHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/signup/welcome', WelcomeHandler),
+                                ('/users', UsersListHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
 
 homeform ="""
-<a href="/signup">Signup Form</a>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="span2 offset6"><a class="btn" href="/signup">Signup Form</a></div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
 """
 signup_form = """
 <html>
@@ -126,7 +163,14 @@ signup_form = """
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="#">Schedule Planner</a>
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -161,6 +205,69 @@ signup_form = """
   </div>
 </div>
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
+"""
+
+welcome = """
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</div>
+<div class="container">
+  <div class="content">
+    <h2>Hello!<br/>Thank you for registering to Schedule Planner, %s!</h2>
+  </div>
+</div>
+<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
+"""
+
+userslist = """
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li><a href="/">Home</a></li>
+          <li class="active"><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="content">
+    <ul>
+      %s
+    </ul>
+  </div>
+</div>
+<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
 """
