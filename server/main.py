@@ -42,10 +42,57 @@ class WelcomeHandler(webapp2.RequestHandler):
 
 class SignupHandler(webapp2.RequestHandler):
 
-    def get(self):
+    def get(self, error ="", username="", email =""):
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
                     'username':'', 'email':''}
         self.response.out.write(signup_form % inserts)
+
+    def post(self):
+        # inserts is a dictionary that is used to insert values into html (signup_form) at 
+        # appropriate places
+        inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
+                    'username':'', 'email':''}
+        # Have to re-initialize it to be blank every time the user posts, otherwise these
+        # would remain populated from the previous post
+
+        # Extract parameters from the post to the server
+        username = self.request.get('username')
+        password = self.request.get('password')
+        verify = self.request.get('verify')
+        email = self.request.get('email')
+
+        # Tests below set the error message in inserts appropriately
+        # if not valid_username(username):
+        #     inserts['username_err'] = "That's not a valid username." 
+        # if not valid_password(password):
+        #     inserts['password_err'] = "That wasn't a valid password."
+        # else:
+        #     if (password != verify):
+        #         inserts['verify_err'] = "Your passwords didn't match."
+        # if email:
+        #     if not valid_email(email):
+        #         inserts['email_err'] = "That's not a valid email."
+
+        # Boolean flag for valid form input. If it is still True after checks below
+        # then the user input was valid
+        is_valid = True
+
+        # If any error message was set, then inserts[key]!=''
+        # so set is_valid False and break
+        for key in inserts:
+            if inserts[key]:
+                is_valid = False
+                break
+
+        # Add username and email into inserts dictionary
+        inserts['username'] = escape(username)
+        inserts['email'] = escape(email)
+
+        if is_valid:
+            self.redirect('/signup/welcome?username='+username)
+        else:
+            self.response.out.write(signup_form % inserts)
+        
 
 
 class MainHandler(webapp2.RequestHandler):
