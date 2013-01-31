@@ -157,8 +157,34 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 debug=True)
 
 homeform ="""
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container" style="margin-left:20px">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container content">
+ <div style="width:800px; margin:0 auto;">
+  <div class="row">
+
 <a href="/signup">Signup Form</a>
 <a href="/login">Login Form</a>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
 """
 signup_form="""
 <html>
