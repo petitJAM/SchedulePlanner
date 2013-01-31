@@ -37,7 +37,7 @@ CREATE TABLE `courses` (
 
 CREATE TABLE `users` (
   `UID` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(20) NOT NULL,
+  `Name` varchar(20) NOT NULL UNIQUE,
   `Email` varchar(255) NOT NULL,
   `Password` char(40) NOT NULL,
   `Active_SID` int(11) DEFAULT NULL,
