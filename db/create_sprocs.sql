@@ -24,7 +24,7 @@ BEGIN
 END$$
 
 
-# Add schedule
+# Add Schedule
 DROP PROCEDURE IF EXISTS addschedule$$
 CREATE PROCEDURE addschedule (userID INT, sdate DATE, edate DATE)
 BEGIN
@@ -35,10 +35,18 @@ BEGIN
 END$$
 
 
+# Add Course to Schedule
+DROP PROCEDURE IF EXISTS addcoursetoschedule$$
+CREATE PROCEDURE addcoursetoschedule (schedID INT, courseID INT)
+BEGIN
+	insert into `coursesinschedules` (`SID`, `CID`) values (schedID, courseID);
+END$$
+
+
 # Add Item
-# May need to change how completeby is handled...
 DROP PROCEDURE IF EXISTS additem$$
-CREATE PROCEDURE additem (schedID INT, courseID INT, completeby varchar(20), priority INT, notes TEXT, diff INT)
+CREATE PROCEDURE additem (schedID INT, courseID INT, completeby varchar(20), 
+						  priority INT, notes TEXT, diff INT)
 BEGIN
 	insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Notes`, `Difficulty`)
 				 values (schedID, courseID, completeby, priority, notes, diff);
@@ -150,7 +158,28 @@ BEGIN
 END$$
 
 
-# 
+# New Active Schedule
+DROP PROCEDURE IF EXISTS activateschedule$$
+CREATE PROCEDURE activateschedule (schedID INT)
+BEGIN
+	SELECT `UID` INTO @uid FROM `schedules` WHERE `SID` = schedID;
+	UPDATE `users` SET `Active_SID` = schedID WHERE `UID` = @uid;
+END$$
+
+
+# verify username/password
+# example: SELECT verifyusernamepassword('Vismay', sha1('Vismay123'));
+DROP FUNCTION IF EXISTS verifyusernamepassword$$
+CREATE FUNCTION verifyusernamepassword (username varchar(20), hpasswd varchar(40))
+RETURNS BOOL
+BEGIN
+	SELECT `Password` INTO @hpwd FROM `users` WHERE `Name` = username;
+
+	IF @hpwd = hpasswd 
+	THEN RETURN TRUE;
+	ELSE RETURN FALSE;
+	END IF;
+END$$
 
 
 delimiter ;
