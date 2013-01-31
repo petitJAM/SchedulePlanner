@@ -28,7 +28,7 @@ EMAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
 
 db = MySQLdb.connect(host = "localhost",
                         user = "root",
-                        passwd ="123",
+                        passwd ="",
                         db ="scheduleplanner")
 cur = db.cursor()
 
