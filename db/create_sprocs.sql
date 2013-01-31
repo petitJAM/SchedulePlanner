@@ -30,6 +30,8 @@ CREATE PROCEDURE addschedule (userID INT, sdate DATE, edate DATE)
 BEGIN
 	insert into `schedules` (`UID`, `Start_date`, `End_date`)
 					 values (userID, sdate, edate);
+	select LAST_INSERT_ID() into @liid;
+	update `users` set `Active_SID` = @liid where `UID` = userID;
 END$$
 
 
@@ -40,6 +42,23 @@ BEGIN
 	insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Notes`, `Difficulty`)
 				 values (schedID, courseID, completeby, priority, notes, diff);
 END$$
+
+
+# Add Assignment
+DROP PROCEDURE IF EXISTS addassignment$$
+CREATE PROCEDURE addassignment (name varchar(45), userID INT, courseID INT, 
+								completeby DATETIME, priority INT, notes TEXT, diff INT)
+BEGIN
+	SELECT `Active_SID` into @schedID FROM `users` WHERE `UID`=userID;
+	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
+
+	SELECT LAST_INSERT_ID() INTO @liid;
+
+	insert into `assignments` (`IID`, `Name`) 
+					   values (@liid, name);
+END$$
+
+
 
 
 
