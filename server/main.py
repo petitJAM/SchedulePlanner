@@ -126,7 +126,7 @@ class LoginHandler (webapp2.RequestHandler):
 
         # Tests below set the error message in inserts appropriately
         if not VerifyExistingUser(username, password):
-            inserts['username_err'] = "Username and Password do not match" 
+            inserts['username_err'] = "Your Username and Password do not match" 
 
         # If any error message was set, then inserts[key]!=''
         # so set is_valid False and break
