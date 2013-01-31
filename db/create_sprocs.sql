@@ -9,10 +9,10 @@ USE `scheduleplanner`$$
 
 # Test proc
 DROP PROCEDURE IF EXISTS countusers$$
-CREATE PROCEDURE countusers (OUT param1 INT)
-BEGIN
-	SELECT COUNT(*) INTO param1 FROM `users`;
-END$$
+#CREATE PROCEDURE countusers (OUT param1 INT)
+#BEGIN
+#	SELECT COUNT(*) INTO param1 FROM `users`;
+#END$$
  
 
 # Add user
@@ -180,6 +180,9 @@ BEGIN
 	ELSE RETURN FALSE;
 	END IF;
 END$$
+
+
+# 
 
 
 delimiter ;
