@@ -1,29 +1,17 @@
-USE `scheduleplanner`;
+/*
+ * Create the scheduleplanner schema along with all of our tables.
+ * 
+ * @author Alex Petitjean
+ */
+
 
 delimiter $$
 
-CREATE TABLE `user` (
-  `UID` int(11) NOT NULL,
-  `Name` varchar(20) NOT NULL,
-  `Email` varchar(255) NOT NULL,
-  `Password` char(40) NOT NULL,
-  `Active_SID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`UID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
+DROP DATABASE IF EXISTS `scheduleplanner`$$
 
-delimiter $$
+CREATE DATABASE `scheduleplanner` /*!40100 DEFAULT CHARACTER SET latin1 */$$
 
-CREATE TABLE `schedule` (
-  `SID` int(11) NOT NULL,
-  `UID` int(11) NOT NULL,
-  `Start_date` date DEFAULT NULL,
-  `End_date` date DEFAULT NULL,
-  PRIMARY KEY (`SID`,`UID`),
-  KEY `UID_idx` (`UID`),
-  CONSTRAINT `UID` FOREIGN KEY (`UID`) REFERENCES `user` (`UID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
-
-delimiter $$
+USE `scheduleplanner`$$
 
 CREATE TABLE `teacher` (
   `TID` int(11) NOT NULL,
@@ -33,7 +21,6 @@ CREATE TABLE `teacher` (
   PRIMARY KEY (`TID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
 
-delimiter $$
 
 CREATE TABLE `course` (
   `CID` int(11) NOT NULL,
@@ -47,7 +34,35 @@ CREATE TABLE `course` (
   CONSTRAINT `TID` FOREIGN KEY (`TID`) REFERENCES `teacher` (`TID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
 
-delimiter $$
+
+CREATE TABLE `user` (
+  `UID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(20) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `Password` char(40) NOT NULL,
+  `Active_SID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`UID`),
+  KEY `Active_SID_fk_idx` (`Active_SID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1$$
+
+
+CREATE TABLE `schedule` (
+  `SID` int(11) NOT NULL,
+  `UID` int(11) NOT NULL,
+  `Start_date` date DEFAULT NULL,
+  `End_date` date DEFAULT NULL,
+  PRIMARY KEY (`SID`,`UID`),
+  KEY `UID_idx` (`UID`),
+  CONSTRAINT `UID` FOREIGN KEY (`UID`) REFERENCES `user` (`UID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
+
+ALTER TABLE `user` 
+	ADD CONSTRAINT `Active_SID_fk` 
+	FOREIGN KEY (`Active_SID`) 
+	REFERENCES `schedule` (`SID`) 
+	ON DELETE CASCADE 
+	ON UPDATE CASCADE$$
+
 
 CREATE TABLE `item` (
   `IID` int(11) NOT NULL,
@@ -64,7 +79,6 @@ CREATE TABLE `item` (
   CONSTRAINT `SID` FOREIGN KEY (`SID`) REFERENCES `schedule` (`SID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
 
-delimiter $$
 
 CREATE TABLE `assignment` (
   `IID` int(11) NOT NULL,
@@ -73,15 +87,6 @@ CREATE TABLE `assignment` (
   CONSTRAINT `IID_assignment` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
 
-delimiter $$
-
-CREATE TABLE `exam` (
-  `IID` int(11) NOT NULL,
-  PRIMARY KEY (`IID`),
-  CONSTRAINT `IID_exam` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
-
-delimiter $$
 
 CREATE TABLE `meeting` (
   `IID` int(11) NOT NULL,
@@ -90,7 +95,6 @@ CREATE TABLE `meeting` (
   CONSTRAINT `IID_meeting` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
 
-delimiter $$
 
 CREATE TABLE `reminder` (
   `IID` int(11) NOT NULL,
@@ -98,7 +102,13 @@ CREATE TABLE `reminder` (
   CONSTRAINT `IID_reminder` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
 
-delimiter $$
+
+CREATE TABLE `exam` (
+  `IID` int(11) NOT NULL,
+  PRIMARY KEY (`IID`),
+  CONSTRAINT `IID_exam` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
+
 
 CREATE TABLE `work` (
   `IID` int(11) NOT NULL,
@@ -106,4 +116,16 @@ CREATE TABLE `work` (
   PRIMARY KEY (`IID`),
   CONSTRAINT `IID_work` FOREIGN KEY (`IID`) REFERENCES `item` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
+
+
+CREATE TABLE `coursesinschedule` (
+  `SID` int(11) NOT NULL,
+  `CID` int(11) NOT NULL,
+  PRIMARY KEY (`SID`,`CID`),
+  KEY `SID_fk_idx` (`SID`),
+  KEY `CID_fk_idx` (`CID`),
+  CONSTRAINT `SID_fk` FOREIGN KEY (`SID`) REFERENCES `schedule` (`SID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `CID_fk` FOREIGN KEY (`CID`) REFERENCES `course` (`CID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
+
 
