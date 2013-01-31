@@ -9,10 +9,10 @@ USE `scheduleplanner`$$
 
 # Test proc
 DROP PROCEDURE IF EXISTS countusers$$
-CREATE PROCEDURE countusers (OUT param1 INT)
-BEGIN
-	SELECT COUNT(*) INTO param1 FROM `users`;
-END$$
+#CREATE PROCEDURE countusers (OUT param1 INT)
+#BEGIN
+#	SELECT COUNT(*) INTO param1 FROM `users`;
+#END$$
  
 
 # Add user
@@ -104,7 +104,7 @@ BEGIN
 	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
 
 	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `assignments` (`IID`, `Subject`) values (@liid, subj);
+	insert into `meetings` (`IID`, `Subject`) values (@liid, subj);
 END$$
 
 
@@ -125,7 +125,7 @@ BEGIN
 	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
 
 	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `assignments` (`IID`) values (@liid);
+	insert into `reminders` (`IID`) values (@liid);
 END$$
 
 
@@ -146,7 +146,7 @@ BEGIN
 	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
 
 	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `assignments` (`IID`, `Start_time`) values (@liid, TIME(subj));
+	insert into `works` (`IID`, `Start_time`) values (@liid, TIME(subj));
 END$$
 
 
@@ -169,17 +169,22 @@ END$$
 
 # verify username/password
 # example: SELECT verifyusernamepassword('Vismay', sha1('Vismay123'));
+# could modify to return integer representing success/failure type
+# for example, 0 - valid, 1 - wrong password, 2 - invalid username
 DROP FUNCTION IF EXISTS verifyusernamepassword$$
 CREATE FUNCTION verifyusernamepassword (username varchar(20), hpasswd varchar(40))
 RETURNS BOOL
 BEGIN
 	SELECT `Password` INTO @hpwd FROM `users` WHERE `Name` = username;
 
-	IF @hpwd = hpasswd 
+	IF @hpwd = hpasswd
 	THEN RETURN TRUE;
 	ELSE RETURN FALSE;
 	END IF;
 END$$
+
+
+# 
 
 
 delimiter ;

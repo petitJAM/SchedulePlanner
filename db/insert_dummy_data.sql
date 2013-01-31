@@ -2,6 +2,12 @@
  * Insert some test data
  */
 
+# Out with the old...
+DELETE FROM users WHERE UID > 0;
+DELETE FROM teachers WHERE TID > 0;
+
+# And in with the new!
+
 insert into `teachers` (`TID`, `Name`, `Department`, `Difficulty`)
 				values (1, 'Nadine Shillingford', 'CSSE', 3);
 insert into `courses`  (`TID`, `Name`, `Start_time`, `End_time`, `Difficulty`)
@@ -15,6 +21,17 @@ SELECT CID into @dbcid FROM courses where Name='Databases';
 
 CALL addschedule(@vis, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 77 DAY));
 CALL addassignment('homework 1', @vis, @dbcid, DATE_ADD(NOW(), INTERVAL 3 DAY), 4, "", 2);
+
+
+# Alex
+CALL adduser('Alex', 'petitjam@rose-hulman.edu', 'possward132');
+
+SELECT UID into @alex FROM users where name='Alex';
+SELECT CID into @dbcid FROM courses where Name='Databases';
+
+CALL addschedule(@alex, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 77 DAY));
+CALL addassignment('homework 3', @alex, @dbcid, DATE_ADD(NOW(), INTERVAL 3 DAY), 4, "", 2);
+CALL addmeeting('Create sprocs', @alex, @dbcid, DATE_ADD(NOW(), INTERVAL 1 DAY), 5, "Makin' sprocs", 2);
 
 /*
 insert into user (Name, Email, Password, Active_SID)
