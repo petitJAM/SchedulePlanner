@@ -16,17 +16,30 @@
 #
 
 import webapp2
-import os
-from google.appengine.ext import ndb
-from webapp2_extras import security
-import time
+
 import cgi
 import re
+import MySQLdb
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASSWORD_RE = re.compile(r"^.{3,20}$")
 EMAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
+
+db = MySQLdb.connect(host = "localhost",
+                        user = "root",
+                        passwd ="",
+                        db ="scheduleplanner")
+cur = db.cursor()
+
+def InsertUserIntoDB(username,email,password):
+
+  cur.execute("CALL adduser (%s,%s,%s)", (username, email, password))
+  db.commit()
+
+def VerifyExistingUser(username, password):
+
+  return cur.execute("SELECT verifyusernamepassword(%s,SHA1(%s))",(username,password))
 
 def escape(txt):
     """Escape out special HTML characters in string"""
@@ -49,6 +62,8 @@ class SignupHandler(webapp2.RequestHandler):
         self.response.out.write(signup_form % inserts)
 
     def post(self):
+
+        is_valid = True
     
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
                     'username':'', 'email':''}
@@ -71,9 +86,6 @@ class SignupHandler(webapp2.RequestHandler):
             if not valid_email(email):
                 inserts['email_err'] = "That's not a valid email."
 
-        # Boolean flag for valid form input. If it is still True after checks below
-        # then the user input was valid
-        is_valid = True
 
         # If any error message was set, then inserts[key]!=''
         # so set is_valid False and break
@@ -82,22 +94,56 @@ class SignupHandler(webapp2.RequestHandler):
                 is_valid = False
                 break
 
-        # Add username and email into inserts dictionary
         inserts['username'] = escape(username)
         inserts['email'] = escape(email)
 
         if is_valid:
-            self.redirect('/signup/welcome?username='+username)
+            InsertUserIntoDB(inserts['username'], inserts['email'], password)
+            self.redirect('/login/welcome?username='+username)
         else:
             self.response.out.write(signup_form % inserts)
 
+
+class LoginHandler (webapp2.RequestHandler):
+    def get(self):
+        inserts = {'username_err':'', 'username':''}
+        self.response.out.write(login_form % inserts)
+
+    def post(self):
+    
+        is_valid = True
+
+        inserts = {'username_err':'', 'username':''}
+
+        # Extract parameters from the post to the server
+        username = self.request.get('username')
+        password = self.request.get('password')
+        verify = self.request.get('verify')
+        email = self.request.get('email')
+
+        # Tests below set the error message in inserts appropriately
+        if not VerifyExistingUser(username, password):
+            inserts['username_err'] = "Username and password dont match" 
+
+        # If any error message was set, then inserts[key]!=''
+        # so set is_valid False and break
+        for key in inserts:
+            if inserts[key]:
+                is_valid = False
+                break
+
+        inserts['username'] = escape(username)
+        inserts['email'] = escape(email)
+
+        if is_valid:
+            self.redirect('/login/welcome?username='+username)
+        else:
+            self.response.out.write(login_form % inserts)
+
 class WelcomeHandler(webapp2.RequestHandler):
     def get(self):
-        welcome = """
-        <h2>Hello %s</h2>
-        """
         username = self.request.get('username')
-        self.response.out.write(welcome % escape(username))
+        self.response.out.write(welcomeUser % escape(username))
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -105,12 +151,40 @@ class MainHandler(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
-                                ('/signup/welcome', WelcomeHandler),
+                                ('/login',LoginHandler),
+                                ('/login/welcome', WelcomeHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
 
 homeform ="""
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container" style="margin-left:20px">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container content">
+ <div style="width:800px; margin:0 auto;">
+  <div class="row">
+
 <a href="/signup">Signup Form</a>
+<a href="/login">Login Form</a>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
 """
 signup_form="""
 <html>
@@ -120,7 +194,7 @@ signup_form="""
 <body style="padding-top: 60px;">
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
-    <div class="container">
+    <div class="container" style="margin-left:20px">
       <a class="brand" href="/">Schedule Planner</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
@@ -167,4 +241,55 @@ signup_form="""
 <script src="assets/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
+"""
+
+login_form ="""
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container" style="margin-left:20px">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container content">
+ <div style="width:800px; margin:0 auto;">
+  <div class="row">
+    <h2>Login Form</h2>
+  </div>
+  <div class="row">
+    <div class="container">
+      <form method="post">
+        <fieldset>
+          <label>Username</label>
+          <input type="text" name="username" value="%(username)s">
+          <span style="color: red">%(username_err)s</span>
+
+          <label>Password</label>
+          <input type="password" name="password" value="">
+          <br/>
+          <input class="btn" type="submit">
+      </form>
+    </div>
+  </div>
+ </div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+
+"""
+welcomeUser ="""
+<h2>Hello %s</h2>
 """
