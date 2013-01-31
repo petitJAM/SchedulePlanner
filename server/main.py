@@ -133,6 +133,7 @@ signup_form="""
   </div>
 </div>
 <div class="container content">
+ <div style="width:800px; margin:0 auto;">
   <div class="row">
     <h2>Signup Form</h2>
   </div>
@@ -161,6 +162,7 @@ signup_form="""
       </form>
     </div>
   </div>
+ </div>
 </div>
 <script src="assets/bootstrap/js/bootstrap.js"></script>
 </body>
