@@ -14,7 +14,7 @@ CREATE DATABASE `scheduleplanner` /*!40100 DEFAULT CHARACTER SET latin1 */$$
 USE `scheduleplanner`$$
 
 CREATE TABLE `teachers` (
-  `TID` int(11) NOT NULL,
+  `TID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(70) DEFAULT NULL,
   `Department` varchar(45) DEFAULT NULL,
   `Difficulty` tinyint(4) NOT NULL DEFAULT '0',
@@ -23,7 +23,7 @@ CREATE TABLE `teachers` (
 
 
 CREATE TABLE `courses` (
-  `CID` int(11) NOT NULL,
+  `CID` int(11) NOT NULL AUTO_INCREMENT,
   `TID` int(11) NOT NULL,
   `Name` varchar(45) NOT NULL,
   `Start_time` time DEFAULT NULL COMMENT 'Start hour of the course. Ex: 9:55 am',
@@ -47,7 +47,7 @@ CREATE TABLE `users` (
 
 
 CREATE TABLE `schedules` (
-  `SID` int(11) NOT NULL,
+  `SID` int(11) NOT NULL AUTO_INCREMENT,
   `UID` int(11) NOT NULL,
   `Start_date` date DEFAULT NULL,
   `End_date` date DEFAULT NULL,
@@ -65,7 +65,7 @@ ALTER TABLE `users`
 
 
 CREATE TABLE `items` (
-  `IID` int(11) NOT NULL,
+  `IID` int(11) NOT NULL AUTO_INCREMENT,
   `SID` int(11) NOT NULL,
   `CID` int(11) NOT NULL,
   `Complete_by` datetime DEFAULT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE `items` (
 
 
 CREATE TABLE `assignments` (
-  `IID` int(11) NOT NULL,
+  `IID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`IID`),
   CONSTRAINT `IID_assignment` FOREIGN KEY (`IID`) REFERENCES `items` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -89,7 +89,7 @@ CREATE TABLE `assignments` (
 
 
 CREATE TABLE `meetings` (
-  `IID` int(11) NOT NULL,
+  `IID` int(11) NOT NULL AUTO_INCREMENT,
   `Subject` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`IID`),
   CONSTRAINT `IID_meeting` FOREIGN KEY (`IID`) REFERENCES `items` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -97,21 +97,21 @@ CREATE TABLE `meetings` (
 
 
 CREATE TABLE `reminders` (
-  `IID` int(11) NOT NULL,
+  `IID` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`IID`),
   CONSTRAINT `IID_reminder` FOREIGN KEY (`IID`) REFERENCES `items` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
 
 
 CREATE TABLE `exams` (
-  `IID` int(11) NOT NULL,
+  `IID` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`IID`),
   CONSTRAINT `IID_exam` FOREIGN KEY (`IID`) REFERENCES `items` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1$$
 
 
 CREATE TABLE `works` (
-  `IID` int(11) NOT NULL,
+  `IID` int(11) NOT NULL AUTO_INCREMENT,
   `Start_time` datetime DEFAULT NULL,
   PRIMARY KEY (`IID`),
   CONSTRAINT `IID_work` FOREIGN KEY (`IID`) REFERENCES `items` (`IID`) ON DELETE CASCADE ON UPDATE CASCADE
