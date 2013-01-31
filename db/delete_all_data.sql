@@ -1,2 +1,0 @@
-DELETE FROM users WHERE UID > 0;
-DELETE FROM teachers WHERE TID > 0;
