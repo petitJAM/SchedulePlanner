@@ -169,6 +169,8 @@ END$$
 
 # verify username/password
 # example: SELECT verifyusernamepassword('Vismay', sha1('Vismay123'));
+# could modify to return integer representing success/failure type
+# for example, 0 - valid, 1 - wrong password, 2 - invalid username
 DROP FUNCTION IF EXISTS verifyusernamepassword$$
 CREATE FUNCTION verifyusernamepassword (username varchar(20), hpasswd varchar(40))
 RETURNS BOOL
