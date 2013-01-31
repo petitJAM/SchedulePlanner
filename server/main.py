@@ -39,7 +39,10 @@ def InsertUserIntoDB(username,email,password):
 
 def VerifyExistingUser(username, password):
 
-  return cur.execute("SELECT verifyusernamepassword(%s,SHA1(%s))",(username,password))
+  checker =0
+  cur.execute("SELECT verifyusernamepassword(%s,SHA1(%s))",(username,password))
+  checker = cur.fetchone()[0]
+  return checker
 
 def escape(txt):
     """Escape out special HTML characters in string"""
@@ -123,7 +126,7 @@ class LoginHandler (webapp2.RequestHandler):
 
         # Tests below set the error message in inserts appropriately
         if not VerifyExistingUser(username, password):
-            inserts['username_err'] = "Username and password dont match" 
+            inserts['username_err'] = "Username and Password do not match" 
 
         # If any error message was set, then inserts[key]!=''
         # so set is_valid False and break
@@ -157,8 +160,34 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 debug=True)
 
 homeform ="""
-<a href="/signup">Signup Form</a>
-<a href="/login">Login Form</a>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container" style="margin-left:20px;">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container content">
+ <div style="width:800px; margin:0 auto;">
+  <a href="/signup">Signup Form</a>
+  <a href="/login">Login Form</a>
+ </div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
 """
 signup_form="""
 <html>
@@ -168,7 +197,7 @@ signup_form="""
 <body style="padding-top: 60px;">
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
-    <div class="container" style="margin-left:20px">
+    <div class="container" style="margin-left:20px;">
       <a class="brand" href="/">Schedule Planner</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
@@ -225,7 +254,7 @@ login_form ="""
 <body style="padding-top: 60px;">
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
-    <div class="container" style="margin-left:20px">
+    <div class="container" style="margin-left:20px;">
       <a class="brand" href="/">Schedule Planner</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
@@ -265,5 +294,32 @@ login_form ="""
 
 """
 welcomeUser ="""
-<h2>Hello %s</h2>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container" style="margin-left:20px;">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container content">
+ <div style="width:800px; margin:0 auto;">
+  <h2>Hello %s</h2>
+ </div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+
 """
