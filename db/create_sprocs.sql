@@ -104,7 +104,7 @@ BEGIN
 	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
 
 	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `assignments` (`IID`, `Subject`) values (@liid, subj);
+	insert into `meetings` (`IID`, `Subject`) values (@liid, subj);
 END$$
 
 
@@ -125,7 +125,7 @@ BEGIN
 	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
 
 	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `assignments` (`IID`) values (@liid);
+	insert into `reminders` (`IID`) values (@liid);
 END$$
 
 
@@ -146,7 +146,7 @@ BEGIN
 	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
 
 	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `assignments` (`IID`, `Start_time`) values (@liid, TIME(subj));
+	insert into `works` (`IID`, `Start_time`) values (@liid, TIME(subj));
 END$$
 
 
@@ -175,7 +175,7 @@ RETURNS BOOL
 BEGIN
 	SELECT `Password` INTO @hpwd FROM `users` WHERE `Name` = username;
 
-	IF @hpwd = hpasswd 
+	IF @hpwd = hpasswd
 	THEN RETURN TRUE;
 	ELSE RETURN FALSE;
 	END IF;
