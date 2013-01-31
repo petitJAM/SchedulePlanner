@@ -16,26 +16,30 @@
 #
 
 import webapp2
+import os
+from google.appengine.ext import ndb
+from webapp2_extras import security
+import time
 import cgi
 import re
 
-
-def escape(txt):
-    """Escape out special HTML characters in string"""
-    return cgi.escape(txt, quote=True);
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASSWORD_RE = re.compile(r"^.{3,20}$")
 EMAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
 
+def escape(txt):
+    """Escape out special HTML characters in string"""
+    return cgi.escape(txt, quote=True);
+
 def valid_username(username):
-    return USER_RE.match(username)
+    return username and USER_RE.match(username)
 
 def valid_password(password):
-    return PASSWORD_RE.match(password)
+    return password and PASSWORD_RE.match(password)
 
 def valid_email(email):
-    return EMAIL_RE.match(email)
+    return email and EMAIL_RE.match(email)
 
 class SignupHandler(webapp2.RequestHandler):
 
@@ -45,12 +49,9 @@ class SignupHandler(webapp2.RequestHandler):
         self.response.out.write(signup_form % inserts)
 
     def post(self):
-        # inserts is a dictionary that is used to insert values into html (signup_form) at 
-        # appropriate places
+    
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
                     'username':'', 'email':''}
-        # Have to re-initialize it to be blank every time the user posts, otherwise these
-        # would remain populated from the previous post
 
         # Extract parameters from the post to the server
         username = self.request.get('username')
@@ -111,59 +112,57 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
 homeform ="""
 <a href="/signup">Signup Form</a>
 """
-signup_form = """
-<h2>Signup Form</h2>
-<form method="post">
-  <table>
-    <tr>
-      <td class="label">
-        Username
-      </td>
-      <td>
-        <input type="text" name="username" value="%(username)s">
-      </td>
-      <td class="error">
-        <span style="color: red">%(username_err)s</span>
-      </td>
-    </tr>
+signup_form="""
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" media="screen">
+</head>
+<body style="padding-top: 60px;">
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/users">Users</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container content">
+  <div class="row">
+    <h2>Signup Form</h2>
+  </div>
+  <div class="row">
+    <div class="container">
+      <form method="post">
+        <fieldset>
+          <label>Username</label>
+          <input type="text" name="username" value="%(username)s">
+          <span style="color: red">%(username_err)s</span>
 
-    <tr>
-      <td class="label">
-        Password
-      </td>
-      <td>
-        <input type="password" name="password" value="">
-      </td>
-      <td class="error">
-        <span style="color: red">%(password_err)s</span>
-      </td>
-    </tr>
+          <label>Password</label>
+          <input type="password" name="password" value="">
+          <span style="color: red">%(password_err)s</span>
 
-    <tr>
-      <td class="label">
-        Verify Password
-      </td>
-      <td>
-        <input type="password" name="verify" value="">
-      </td>
-      <td class="error">
-        <span style="color: red">%(verify_err)s</span>
-      </td>
-    </tr>
+          <label>Verify Password</label>
+          <input type="password" name="verify" value="">
+          <span style="color: red">%(verify_err)s</span>
 
-    <tr>
-      <td class="label">
-        Email (optional)
-      </td>
-      <td>
-        <input type="text" name="email" value="%(email)s">
-      </td>
-      <td class="error">
-        <span style="color: red">%(email_err)s</span>
-      </td>
-    </tr>
-  </table>
+          <label>Email (optional)</label>
+          <input type="text" name="email" value="%(email)s">
+          <span style="color: red">%(email_err)s</span>
 
-  <input type="submit">
-</form>
+          <br/>
+          <input class="btn" type="submit">
+      </form>
+    </div>
+  </div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
 """

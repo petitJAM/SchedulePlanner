@@ -1,0 +1,54 @@
+<h2>Signup Form</h2>
+<form method="post">
+  <table>
+    <tr>
+      <td class="label">
+        Username
+      </td>
+      <td>
+        <input type="text" name="username" value="%(username)s">
+      </td>
+      <td class="error">
+        <span style="color: red">%(username_err)s</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+        Password
+      </td>
+      <td>
+        <input type="password" name="password" value="">
+      </td>
+      <td class="error">
+        <span style="color: red">%(password_err)s</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+        Verify Password
+      </td>
+      <td>
+        <input type="password" name="verify" value="">
+      </td>
+      <td class="error">
+        <span style="color: red">%(verify_err)s</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label">
+        Email (optional)
+      </td>
+      <td>
+        <input type="text" name="email" value="%(email)s">
+      </td>
+      <td class="error">
+        <span style="color: red">%(email_err)s</span>
+      </td>
+    </tr>
+  </table>
+
+  <input type="submit">
+</form>
