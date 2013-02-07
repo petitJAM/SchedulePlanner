@@ -2,18 +2,26 @@ delimiter $$
 
 DROP VIEW IF EXISTS `user_items`$$
 CREATE VIEW `user_items` AS 
-SELECT U.`UID` AS UID, U.`Name` AS UserName, U.`Active_SID` AS SID,
-	   I.`IID` AS IID, I.`Complete_by` AS CompleteBy, I.`Priority` AS P, 
-	   I.`Notes` AS Notes, I.`Difficulty` AS D, 
-	   C.`Name` AS CourseName, T.`Name` AS TeacherName
-	FROM `users` U 
-		 RIGHT JOIN `items` I
-		 ON I.`SID` = U.`Active_SID`
-		 LEFT JOIN `courses` C
-		 ON I.`CID` = C.`CID`
-		 LEFT JOIN
-		 `teachers` T
-		 ON C.`TID` = T.`TID`$$
-
-
-delimiter ;
+SELECT `u`.`UID` AS `UID`,
+	   `u`.`Name` AS `UserName`,
+	   `u`.`Active_SID` AS `SID`,
+	   `i`.`IID` AS `IID`,
+	   `i`.`Complete_by` AS `CompleteBy`
+	   ,`i`.`Priority` AS `P`,
+	   `i`.`Notes` AS `Notes`,
+	   `i`.`Difficulty` AS `D`,
+	   `c`.`Name` AS `CourseName`,
+	   `t`.`Name` AS `TeacherName`,
+	   `a`.`Name` AS `AssignmentName`,
+	   `m`.`Subject` AS `MeetingSubject`,
+	   `w`.`Start_time` AS `WorkStartTime`
+ FROM 
+	`items` `i` 
+	left join `users` `u` on `i`.`SID` = `u`.`Active_SID` 
+	left join `courses` `c` on `i`.`CID` = `c`.`CID` 
+	left join `teachers` `t` on `c`.`TID` = `t`.`TID` 
+	left join `assignments` `a` on `i`.`IID` = `a`.`IID` 
+	left join `exams` `e` on `i`.`IID` = `e`.`IID` 
+	left join `meetings` `m` on `i`.`IID` = `m`.`IID` 
+	left join `reminders` `r` on `i`.`IID` = `r`.`IID`  
+	left join `works` `w` on `i`.`IID` = `w`.`IID`$$
