@@ -72,7 +72,14 @@ class ScheduleHandler(TemplateHandler):
     self.renderFile("project.html", **inserts)
 
   def post(self):
-    inserts ={}
+    username = self.request.get('username')
+
+    # update
+    print self.request.get('')
+
+    schedule = getUserAssignments(username)
+    jsonschedule = json.dumps(schedule, default=dthandler)
+    inserts ={'username': username, 'items':jsonschedule}
     self.renderFile("project.html", **inserts)
 
 class SignupHandler(TemplateHandler):
