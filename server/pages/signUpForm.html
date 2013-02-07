@@ -22,32 +22,33 @@
     </div>
   </div>
   <div class="container content">
-   <div style="width:800px; margin:0 auto;">
-    <div class="row">
-      <h2>Signup Form</h2>
-    </div>
-    <div class="row">
-      <div class="container">
-        <form method="post">
-          <fieldset>
-            <label>Username</label>
-            <input type="text" name="username" value="{{username}}">
-            <span style="color: red">{{username_err}}</span>
+    <div style="width:800px; margin:0 auto;">
+      <div class="row">
+        <h2>Signup Form</h2>
+      </div>
+      <div class="row">
+        <div class="container">
+          <form method="post">
+            <fieldset>
+              <label>Username</label>
+              <input type="text" name="username" value="{{username}}">
+              <span style="color: red">{{username_err}}</span>
 
-            <label>Password</label>
-            <input type="password" name="password" value="">
-            <span style="color: red">{{password_err}}</span>
+              <label>Password</label>
+              <input type="password" name="password" value="">
+              <span style="color: red">{{password_err}}</span>
 
-            <label>Verify Password</label>
-            <input type="password" name="verify" value="">
-            <span style="color: red">{{verify_err}}</span>
+              <label>Verify Password</label>
+              <input type="password" name="verify" value="">
+              <span style="color: red">{{verify_err}}</span>
 
-            <label>Email (optional)</label>
-            <input type="text" name="email" value="{{email}}">
-            <span style="color: red">{{email_err}}</span>
+              <label>Email (optional)</label>
+              <input type="text" name="email" value="{{email}}">
+              <span style="color: red">{{email_err}}</span>
 
-            <br/>
-            <input class="btn" type="submit">
+              <br/>
+              <input class="btn" type="submit">
+            </fieldset> 
           </form>
         </div>
       </div>
