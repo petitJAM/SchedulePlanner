@@ -21,7 +21,7 @@ handlers:
 - url: .*
   script: main.app
 
-- url: /contact\.html
+- url: /contact
   static_dir: pages/contact
 
 libraries:

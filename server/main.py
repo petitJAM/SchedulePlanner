@@ -181,6 +181,7 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
                                 ('/login/scheduler',ScheduleHandler),
-                                ('/',MainHandler)], 
+                                ('/',MainHandler),
+                                ('/contact',ContactHandler)], 
                                 debug=True)
 
