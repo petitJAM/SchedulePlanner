@@ -199,6 +199,27 @@ BEGIN
 END$$
 
 
+DROP PROCEDURE IF EXISTS getuserassignments$$
+CREATE PROCEDURE getuserassignments (username varchar(20))
+BEGIN
+	SELECT 
+		a.`Name` AS `AssignmentName`,
+		`items`.`Complete_by` AS `Complete_by`,
+		`items`.`Priority` AS `P`,
+		`items`.`Notes` AS `Notes`,
+		`items`.`Difficulty` AS `D`,
+		`courses`.`Name` AS `CourseName`
+	FROM 
+		((((
+		`assignments` a 
+		left join `items` on a.`IID` = `items`.`IID`)
+		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
+		left join `courses` on `items`.`CID` = `courses`.`CID`)
+		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
+		WHERE `users`.`Name` = username;
+END$$
+
+
 delimiter ;
 
 /*

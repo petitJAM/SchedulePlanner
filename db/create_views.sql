@@ -14,7 +14,12 @@ SELECT `u`.`UID` AS `UID`,
 	   `t`.`Name` AS `TeacherName`,
 	   `a`.`Name` AS `AssignmentName`,
 	   `m`.`Subject` AS `MeetingSubject`,
-	   `w`.`Start_time` AS `WorkStartTime`
+	   `w`.`Start_time` AS `WorkStartTime`,
+	   `a`.`IID` AS `Assignment`,
+	   `e`.`IID` AS `Exam`,
+	   `m`.`IID` AS `Meeting`,
+	   `r`.`IID` AS `Reminder`,
+	   `w`.`IID` AS `Work`
  FROM
 	`items` `i`
 	left join `users` `u` on `i`.`SID` = `u`.`Active_SID`
