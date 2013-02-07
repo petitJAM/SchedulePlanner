@@ -208,7 +208,8 @@ BEGIN
 		`items`.`Priority` AS `P`,
 		`items`.`Notes` AS `Notes`,
 		`items`.`Difficulty` AS `D`,
-		`courses`.`Name` AS `CourseName`
+		`courses`.`Name` AS `CourseName`,
+		`courses`.`CID` AS `CourseID`
 	FROM 
 		((((
 		`assignments` a 
@@ -228,8 +229,8 @@ BEGIN
 	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
 	
 	SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
-	INTO @duedate, @course, @diff, @cid
-	FROM `items`, `courses` WHERE `SID` =@SID AND `IID` = aid;
+			INTO @duedate, @course, @diff, @cid
+		FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid;
 	
 	UPDATE `assignments` SET `Name` = aname WHERE `IID` = aid;
 
