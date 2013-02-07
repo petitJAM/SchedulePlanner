@@ -62,14 +62,11 @@ def valid_email(email):
     return email and EMAIL_RE.match(email)
 
 
-
-
-class SignupHandler(webapp2.RequestHandler):
-
+class SignupHandler(TemplateHandler):
     def get(self):
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
                     'username':'', 'email':''}
-        self.response.out.write(signup_form % inserts)
+        self.renderFile("signUpForm.html", **inserts)
 
     def post(self):
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
@@ -108,13 +105,13 @@ class SignupHandler(webapp2.RequestHandler):
             addUser(inserts['username'], inserts['email'], password)
             self.redirect('/login/welcome?username='+username)
         else:
-            self.response.out.write(signup_form % inserts)
+            self.renderFile("signUpForm.html", **inserts)
 
 
-class LoginHandler (webapp2.RequestHandler):
+class LoginHandler (TemplateHandler):
     def get(self):
         inserts = {'username_err':'', 'username':''}
-        self.response.out.write(login_form % inserts)
+        self.renderFile("loginForm.html", **inserts)
 
     def post(self):
     
@@ -145,7 +142,7 @@ class LoginHandler (webapp2.RequestHandler):
         if is_valid:
             self.redirect('/login/schedule?username='+username)
         else:
-            self.response.out.write(login_form % inserts)
+            self.renderFile("loginForm.html", **inserts)
 
 class ScheduleViewHandler(webapp2.RequestHandler):
     def get(self):
@@ -153,10 +150,11 @@ class ScheduleViewHandler(webapp2.RequestHandler):
         schedule = getUserSchedule(username)
         self.response.out.write(scheduleView % schedule)
 
-class WelcomeHandler(webapp2.RequestHandler):
+class WelcomeHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
-        self.response.out.write(welcomeUser % escape(username))
+        inserts = {'username': username}
+        self.renderFile("welcomeUser.html", **inserts)
 
 class MainHandler(TemplateHandler):
     def get(self):
@@ -168,3 +166,4 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login/schedule', ScheduleViewHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
+
