@@ -34,12 +34,13 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="container-fluid">
 		<form method="post">
 			<table data-bind="visible: itemslist().length>=0">
 				<thead>
 					<tr>
-						<th><font size="5">Category name</th>
+						<th><font size="5">Notes</th>
 						<th><font size="5">Difficulty</th>
 					</tr>
 				</thead>
@@ -92,7 +93,7 @@
 		}
 		ko.applyBindings(new ItemViewModel(keywords));
 	//formatting
-	})
+})
 
 
 
