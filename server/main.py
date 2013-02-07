@@ -150,7 +150,7 @@ class LoginHandler (TemplateHandler):
         inserts['email'] = escape(email)
 
         if is_valid:
-            self.redirect('/login/schedule?username='+username)
+            self.redirect('/login/welcome?username='+username)
         else:
             self.renderFile("loginForm.html", **inserts)
 
@@ -179,7 +179,6 @@ class MainHandler(TemplateHandler):
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
-                                ('/login/schedule', ScheduleViewHandler),
                                 ('/login/scheduler',ScheduleHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
