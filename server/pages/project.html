@@ -26,7 +26,7 @@
       <a class="brand" href="/">Schedule Planner</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/">Home</a></li>
           <li><a href="/users">Users</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
@@ -35,10 +35,12 @@
   </div>
 </div>
 <div class="container content">
+	<script type="text/javascript">
+		 
+	</script>
  <div style="width:800px; margin:0 auto;">
   	<br></br>
   	<form action='/someServerSideHandler'>
-		
 		<table data-bind='visible: categories().length >= 0'>
 			<thead>
 				<tr>
@@ -190,13 +192,13 @@
 			self.addTodoItem = function(){
 				self.todoList.push( new TodoItem("New Task", self.categories[0],"MM/DD/YYY" ));
 			}
-			console.log(self.todoList);
+			//console.log(self.todoList);
 			
 			self.prioritizedList = ko.computed(function(){
 				var tempTodoList = self.todoList.slice();
 				var pList = new Array();
 				var tempPList = new Array();
-				console.log(tempTodoList);
+				//console.log(tempTodoList);
 				for(var i=0; i<tempTodoList.length; i++){
 					var obj ={
 						name: tempTodoList[i].todoName._latestValue.toLowerCase(),
@@ -207,7 +209,7 @@
 					tempPList.push(obj);
 					pList.push(tempTodoList[i].todoName._latestValue);
 				}
-				console.log(tempPList);
+				//console.log(tempPList);
 
 
 				for(var i=0; i<tempPList.length;i++){
@@ -217,7 +219,7 @@
 						var index = string.search(keywords[k].word)
 						//console.log(keywords[k].word);
 						if(index>=0){
-							console.log(keywords[k].word);
+							//console.log(keywords[k].word);
 						}
 					}
 				}
