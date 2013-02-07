@@ -65,8 +65,10 @@ def valid_email(email):
 
 class ScheduleHandler(TemplateHandler):
   def get(self):
-
-    inserts={}
+    username = self.request.get('username')
+    schedule = getUserSchedule(username)
+    jsonschedule = json.dumps(schedule, default=dthandler)
+    inserts={'username': username, 'items':jsonschedule}
     self.renderFile("project.html", **inserts)
 
   def post(self):
@@ -150,16 +152,11 @@ class LoginHandler (TemplateHandler):
         inserts['email'] = escape(email)
 
         if is_valid:
+
             self.redirect('/login/welcome?username='+username)
+
         else:
             self.renderFile("loginForm.html", **inserts)
-
-class ScheduleViewHandler(TemplateHandler):
-    def get(self):
-        username = self.request.get('username')
-        schedule = getUserSchedule(username)
-        jsonsched = json.dumps(schedule, default=dthandler)
-        self.renderFile("schedule_dummy.html", **{'items':jsonsched})
 
 class WelcomeHandler(TemplateHandler):
     def get(self):
