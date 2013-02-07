@@ -183,6 +183,13 @@ BEGIN
 	END IF;
 END$$
 
+# Add Teachers
+DROP PROCEDURE IF EXISTS addteacher$$
+CREATE PROCEDURE addteacher (name varchar(45), Department varchar(45))
+BEGIN
+	insert into `teachers` (`Name`, `Department`)
+				 values (name, department);
+END$$
 
 # Get Schedule   user_items
 DROP PROCEDURE IF EXISTS getuseritems$$
