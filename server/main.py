@@ -20,9 +20,28 @@ from webapp2_extras import session
 from google.appengine.ext import db
 
 import cgi
+import os
 import re
+import MySQLdb
+import jinja2
 
-from db import *
+from google.appengine.ext import db
+
+template_dir = os.path.join(os.path.dirname(__file__), 'pages')
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
+                               autoescape = True)
+
+def render_str(template, **params):
+    t = jinja_env.get_template(template)
+    return t.render(params)
+
+class TemplateHandler(webapp2.RequestHandler):
+
+    def renderFile(self, template, **kw):
+        self.response.out.write(render_str(template, **kw))
+
+    def writeFile(self, *a, **kw):
+        self.response.out.write(*a, **kw)
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -140,9 +159,9 @@ class WelcomeHandler(webapp2.RequestHandler):
         username = self.request.get('username')
         self.response.out.write(welcomeUser % escape(username))
 
-class MainHandler(webapp2.RequestHandler):
+class MainHandler(TemplateHandler):
     def get(self):
-        self.response.out.write(homeform)
+        self.renderFile("index.html")
 
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
@@ -150,36 +169,7 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
 
-homeform ="""
-<html>
-<head>
-  <link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" media="screen">
-</head>
-<body style="padding-top: 60px;">
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container" style="margin-left:20px;">
-      <a class="brand" href="/">Schedule Planner</a>
-      <div class="nav-collapse collapse">
-        <ul class="nav">
-          <li class="active"><a href="/">Home</a></li>
-          <li><a href="/users">Users</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="container content">
- <div style="width:800px; margin:0 auto;">
-  <a href="/signup">Signup Form</a>
-  <a href="/login">Login Form</a>
- </div>
-</div>
-<script src="assets/bootstrap/js/bootstrap.js"></script>
-</body>
-</html>
-"""
+
 signup_form="""
 <html>
 <head>
