@@ -173,6 +173,10 @@ class MainHandler(TemplateHandler):
     def get(self):
         self.renderFile("index.html")
 
+class ContactHandler(TemplateHandler):
+    def get(self):
+        self.renderFile("contact.html")
+
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
