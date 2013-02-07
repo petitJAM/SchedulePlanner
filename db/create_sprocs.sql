@@ -220,6 +220,14 @@ BEGIN
 		WHERE `users`.`Name` = username;
 END$$
 
+DROP PROCEDURE IF EXISTS getusercourses$$
+CREATE PROCEDURE getusercourses (username varchar(20))
+BEGIN
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT * FROM `coursesinschedules`, `courses`
+				WHERE `SID` = @SID;
+END$$
+
 delimiter $$
 USE `scheduleplanner`$$
 DROP PROCEDURE IF EXISTS storeuserassignments$$
