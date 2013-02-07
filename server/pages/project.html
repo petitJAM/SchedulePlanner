@@ -37,7 +37,7 @@
 
 	<div class="container-fluid content">
 		<h1></h1>
-		<form method="post">
+		<form method="post" data-bind="submit: ItemViewModel.submitMe">
 			<table data-bind="visible: itemslist().length>=0">
 				<thead>
 					<tr>
@@ -141,6 +141,11 @@
 
 			self.removeItem = function(itm){
 				self.itemslist.remove(itm)
+			}
+
+			self.submitMe = function() {
+				// gather myself for posting
+				return self.toJSON
 			}
 		}
 		ko.applyBindings(new ItemViewModel(itemsarray));

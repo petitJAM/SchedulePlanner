@@ -75,7 +75,7 @@ class ScheduleHandler(TemplateHandler):
     username = self.request.get('username')
 
     # update
-    print self.request.get('')
+    print self.request.get('courses')
 
     schedule = getUserAssignments(username)
     jsonschedule = json.dumps(schedule, default=dthandler)
