@@ -5,9 +5,10 @@
 import MySQLdb
 
 db = MySQLdb.connect(host = "localhost",
-                        user = "scheduler",
-                        passwd ="password123",
-                        db ="scheduleplanner")
+                     user = "scheduler",
+                     passwd ="password123",
+                     db ="scheduleplanner",
+                     cursorclass=MySQLdb.cursors.DictCursor)
 cur = db.cursor()
 
 def addUser(username,email,password):
@@ -21,5 +22,5 @@ def verifyUserExists(username, password):
     return checker
 
 def getUserSchedule(username):
-    cur.callproc('getuseritems', ('petitjam'))
-    return cur.fetchone()
+    cur.callproc('getuseritems', (username,))
+    return cur.fetchall()

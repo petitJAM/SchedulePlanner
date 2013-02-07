@@ -21,7 +21,9 @@ import cgi, os, re
 import MySQLdb
 import jinja2
 
-from pages import *
+import json, datetime
+dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
+
 from dbqueries import *
 
 from google.appengine.ext import db
@@ -144,11 +146,12 @@ class LoginHandler (TemplateHandler):
         else:
             self.renderFile("loginForm.html", **inserts)
 
-class ScheduleViewHandler(webapp2.RequestHandler):
+class ScheduleViewHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
         schedule = getUserSchedule(username)
-        self.response.out.write(scheduleView % schedule)
+        jsonsched = json.dumps(schedule, default=dthandler)
+        self.renderFile("schedule_dummy.html", **{'items':jsonsched})
 
 class WelcomeHandler(TemplateHandler):
     def get(self):
