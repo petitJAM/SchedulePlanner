@@ -66,7 +66,7 @@ def valid_email(email):
 class ScheduleHandler(TemplateHandler):
   def get(self):
     username = self.request.get('username')
-    schedule = getUserSchedule(username)
+    schedule = getUserAssignments(username)
     jsonschedule = json.dumps(schedule, default=dthandler)
     inserts={'username': username, 'items':jsonschedule}
     self.renderFile("project.html", **inserts)

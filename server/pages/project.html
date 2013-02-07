@@ -35,63 +35,113 @@
 		</div>
 	</div>
 
-	<div class="container-fluid">
+	<div class="container-fluid content">
+		<h1></h1>
 		<form method="post">
 			<table data-bind="visible: itemslist().length>=0">
 				<thead>
 					<tr>
-						<th><font size="5">Notes</th>
-						<th><font size="5">Difficulty</th>
+						<th><font size="5">Name</font></th>
+						<th><font size="5">Course</font></th>
+						<th><font size ="5">Assignment Diff.</font></th>
+						<th><font size ="5">Due Date</font></th>
 					</tr>
 				</thead>
 				<tbody data-bind='foreach: itemslist'>
 					<tr>
-						<td><input class='required' type="text" data-bind='value:ctgName, uniqueName: true' /></td>
-						<td><select data-bind="options: $root.difficultyValues, value: ctgDifficulty, optionsText: 'diffName' "></select></td>
+						<td><input style="height:30px;" class='required' type="text" data-bind='value:itemName' /></td>
 
-						<td><a href='#' data-bind='click: $root.removeCategory'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
+						<td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'courseName' "></select></td>
+
+						<td><select data-bind="options: $root.difficultyValues, value: itemDiff, optionsText: 'diffName' ">
+						</select></td>
+
+						<td><input style="height:30px;" type="date" name="duedate"></input></td>
+
+						<td><a href='#' data-bind='click: $root.removeItem'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
+
+
 					</tr>
 				</tbody>
 			</table>
+			<a href='#' data-bind='click: $root.addItem'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
 		</form>
 	</div>
+
+	<div class="pagination">
+		<ul>
+			<li><a href="/login/scheduler">Assignments</a></li>
+			<li><a href="/login/scheduler/exams">Exams</a></li>
+			<li><a href="/login/scheduler/work">Work</a></li>
+			<li><a href="/login/scheduler/reminders">Reminders</a></li>
+			<li><a href="/login/scheduler/meetings">Meetings</a></li>
+		</ul>
+	</div>
+
+	<br><br><br><br>
+	<pre data-bind="text:ko.toJSON($root, null, 2)"></pre>
 
 
 	<!--  -->
 	<script type="text/javascript">
 	$(function(){
-		items = (
-			function() {
-				istr = '{{items}}'.replace(/&#34;/g, '"');
-				items = JSON.parse(istr);
-				return items
-			}
-			);
-		console.log(items);
+		function getData() {
+			istr = '{{items}}'.replace(/&#34;/g, '"');
+			items = JSON.parse(istr);
+			return items
+		};
+		var items = getData();
 
-		function Item(notes, ctg, priority, diff, duedate){
+		
+
+		function Item(name, course, diff, duedate){
 			var self = this;
 
-			self.itemNotes = ko.observable(notes);
-			self.itemCtg = ko.observable(ctg);
-			self.itemPriority = priority;
+			self.itemName = ko.observable(name);
+			self.itemCourse = ko.observable(course);
 			self.itemDiff = ko.observable(diff);
 			self.itemDate = ko.observable(duedate);	
+			//self.itemPriority = ko.computed();
 		}
-
-		function ItemViewModel (keywords){
+		function parseData(items){
+			itmlist =[];
+			for(var i=0; i<items.length; i++){
+				itmlist.push(new Item( items[i].AssignmentName, items[i].CourseName, items[i].D, items[i].Complete_by));
+			}
+			return itmlist;
+		}
+		var itemsarray = parseData(items);
+		console.log(itemsarray);
+		function ItemViewModel (itemsarray){
 			var self =this;
+			self.courses = [
+			{courseName:"ChooseOne", courseDiff: 0},
+			{courseName: "Databases", courseDiff: 5},
+			{courseName: "Theory of Computation", courseDiff: 5},
+			{courseName: "Tech Com", courseDiff: 5},
+			{courseName: "Junior Project", courseDiff: 5},
+			];
 
-			self.itemslist = ko.observableArray([
-				new Item("lab 9",, 1, 3, new Date ()),
-				new Item("homework 4",,1,4, new Date())
-				]);
+			self.difficultyValues = [
+			{diffName: "ChooseOne", diff: 0},
+			{diffName: "snore..zzz", diff: 1},
+			{diffName: "easy stuff", diff: 2},
+			{diffName: "yipes! focus now!", diff: 3},
+			{diffName: "Gonna be up late :(", diff: 4},
+			{diffName: "OH S**T FML!", diff: 5}
+			];
+
+			self.itemslist = ko.observableArray(itemsarray);
 
 			self.addItem = function() {
-				self.itemslist.push(new Item("dummy text",));
+				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date()));
+			}
+
+			self.removeItem = function(itm){
+				self.itemslist.remove(itm)
 			}
 		}
-		ko.applyBindings(new ItemViewModel(keywords));
+		ko.applyBindings(new ItemViewModel(itemsarray));
 	//formatting
 })
 
@@ -99,9 +149,9 @@
 
 
 
-	</script>
+</script>
 
-	<script src="../assets/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/bootstrap/js/bootstrap.js"></script>
 </body>
 
 </html>

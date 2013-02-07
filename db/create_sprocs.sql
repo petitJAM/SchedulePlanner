@@ -220,6 +220,37 @@ BEGIN
 END$$
 
 
+DROP PROCEDURE IF EXISTS storeuserassignments$$
+CREATE PROCEDURE storeuserassignments (username varchar(20), aname varchar(45), acourse varchar(45), adiff tinyint(4), aduedate datetime)
+BEGIN
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	
+	SELECT `items`.`Complete_by`,  `courses`.`Name`, `items`.`Difficulty` INTO @duedate, @course, @diff
+	FROM `items`, `courses` WHERE `SID` =@SID;
+
+	
+
+	IF (aduedate != @duedate) THEN
+	BEGIN
+			UPDATE `items` SET `Complete_by` = aduedate WHERE `SID` = @SID;
+	END;
+
+	IF (acourse != @course) THEN
+	BEGIN
+			UPDATE `items` SET `CID` = @course WHERE `SID` = @SID;
+	END;
+
+	IF (adiff != @diff) THEN
+	BEGIN
+			UPDATE `items` SET `Difficulty` = @course WHERE `SID` = @SID;
+	END;
+	
+	
+	#INSERT INTO `assignments`();
+
+END$$
+	
+
 delimiter ;
 
 /*

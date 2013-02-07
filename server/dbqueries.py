@@ -21,8 +21,8 @@ def verifyUserExists(username, password):
     checker = cur.fetchone()
     return checker
 
-def getUserSchedule(username):
-    cur.callproc('getuseritems', (username,))
+def getUserAssignments(username):
+    cur.callproc('getuserassignments', (username,))
     items = cur.fetchall()
     cur.nextset()
     return items
