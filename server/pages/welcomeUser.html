@@ -9,24 +9,24 @@
 <body style="padding-top: 60px;">
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
-    <div class="container" style="margin-left:20px;">
+    <div class="container-fluid" style="margin-left:20px;">
       <a class="brand" href="/">Schedule Planner</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li><a href="/">Home</a></li>
-          <li><a href="/users">Users</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="/">Users</a></li>
+          <li><a href="/">Contact</a></li>
         </ul>
       </div>
     </div>
   </div>
 </div>
-<div class="container content">
+<div class="container content hero-unit">
  <div style="width:800px; margin:0 auto;">
   <h2>Hello {{username}} </h2>
- </div>
- <form method="post">
-    <input class="btn" type="submit" value="Go to Schedule"></input>
+ <p>Ready to start schedule planner</p>
+ <form method="post" style="width:800px; margin:0 auto;">
+    <input class="btn btn-primary btn-large" type="submit" value="Go to Schedule"></input>
  </form>
 </div>
 <script src="assets/bootstrap/js/bootstrap.js"></script>

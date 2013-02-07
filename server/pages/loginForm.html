@@ -1,49 +1,44 @@
 <html>
 <head>
   <link type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css" media="screen">
-  <!-- jquery stuff -->
-  <link href="../assets/components/jquery-ui-1.9.1.custom/css/start/jquery-ui-1.9.1.custom.css" rel="stylesheet">
-  <script src="../assets/components/jquery-ui-1.9.1.custom/js/jquery-1.8.2.js"></script>
-  <script src="../assets/components/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.js"></script>
 </head>
 <body style="padding-top: 60px;">
-  <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container" style="margin-left:20px;">
-        <a class="brand" href="/">Schedule Planner</a>
-        <div class="nav-collapse collapse">
-          <ul class="nav">
-            <li class="active"><a href="/">Home</a></li>
-            <li><a href="/users">Users</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container-fluid" style="margin-left:20px;">
+      <a class="brand" href="/">Schedule Planner</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li><a href="/">Home</a></li>
+          <li><a href="/">Users</a></li>
+          <li><a href="/">Contact</a></li>
+        </ul>
       </div>
     </div>
   </div>
-  <div class="container content" style="width:800px; margin:0 auto;">
+</div>
+<div class="container content">
+ <div style="width:800px; margin:0 auto;">
+  <div class="row">
+    <h2>Login Form</h2>
+  </div>
+  <div class="row">
+    <div class="container">
+      <form method="post">
+        <fieldset>
+          <label>Username</label>
+          <input type="text" name="username" value="{{username}}">
+          <span style="color: red">{{username_err}}</span>
 
-    <div class="row">
-      <h2>Login Form</h2>
-    </div>
-    <div class="row">
-      <div class="container">
-        <form method="post">
-          <fieldset>
-            <label>Username</label>
-            <input type="text" name="username" value="{{username}}">
-            <span style="color: red">{{username_err}}</span>
-
-            <label>Password</label>
-            <input type="password" name="password" value="">
-            <br/>
-            <input class="btn" type="submit">
-          </fieldset>
-        </form>
-      </div>
+          <label>Password</label>
+          <input type="password" name="password" value="">
+          <br/>
+          <input class="btn" type="submit">
+      </form>
     </div>
   </div>
-
-  <script src="../assets/bootstrap/js/bootstrap.js"></script>
+ </div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
