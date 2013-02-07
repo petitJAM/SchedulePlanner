@@ -191,7 +191,12 @@ BEGIN
 				 values (name, department);
 END$$
 
-# 
+# Get Schedule   user_items
+DROP PROCEDURE IF EXISTS getuseritems$$
+CREATE PROCEDURE getuseritems (username varchar(20))
+BEGIN
+	SELECT * FROM `user_items` UI WHERE UI.`UserName` = username;
+END$$
 
 
 delimiter ;

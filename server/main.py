@@ -17,12 +17,15 @@
 
 import webapp2
 
-import cgi
-import os
-import re
+import cgi, os, re
 import MySQLdb
 import jinja2
+
+import json, datetime
+dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
+
 from dbqueries import *
+
 from google.appengine.ext import db
 
 template_dir = os.path.join(os.path.dirname(__file__), 'pages')
@@ -70,20 +73,13 @@ class ScheduleHandler(TemplateHandler):
     inserts ={}
     self.renderFile("project.html", **inserts)
 
-
-
-
 class SignupHandler(TemplateHandler):
-
     def get(self):
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
                     'username':'', 'email':''}
         self.renderFile("signUpForm.html", **inserts)
 
     def post(self):
-
-        is_valid = True
-    
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
                     'username':'', 'email':''}
 
@@ -105,7 +101,7 @@ class SignupHandler(TemplateHandler):
             if not valid_email(email):
                 inserts['email_err'] = "That's not a valid email."
 
-
+        is_valid = True
         # If any error message was set, then inserts[key]!=''
         # so set is_valid False and break
         for key in inserts:
@@ -154,9 +150,16 @@ class LoginHandler (TemplateHandler):
         inserts['email'] = escape(email)
 
         if is_valid:
-            self.redirect('/login/welcome?username='+username)
+            self.redirect('/login/schedule?username='+username)
         else:
             self.renderFile("loginForm.html", **inserts)
+
+class ScheduleViewHandler(TemplateHandler):
+    def get(self):
+        username = self.request.get('username')
+        schedule = getUserSchedule(username)
+        jsonsched = json.dumps(schedule, default=dthandler)
+        self.renderFile("schedule_dummy.html", **{'items':jsonsched})
 
 class WelcomeHandler(TemplateHandler):
     def get(self):
@@ -173,14 +176,11 @@ class MainHandler(TemplateHandler):
     def get(self):
         self.renderFile("index.html")
 
-
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
+                                ('/login/schedule', ScheduleViewHandler),
                                 ('/login/scheduler',ScheduleHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
-
-
-
 
