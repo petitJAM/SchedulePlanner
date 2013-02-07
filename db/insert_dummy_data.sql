@@ -52,6 +52,8 @@ CALL addmeeting('Create sprocs', @alex, @dbcid, DATE_ADD(NOW(), INTERVAL 1 DAY),
 
 SELECT Active_SID into @asid FROM users where name='Alex';
 CALL addcoursetoschedule(@asid, @dbcid);
+CALL addcoursetoschedule(@asid, @tccid);
+CALL addcoursetoschedule(@asid, @sdcid);
 
 /*
 insert into user (Name, Email, Password, Active_SID)

@@ -13,7 +13,7 @@ DROP PROCEDURE IF EXISTS countusers$$
 #BEGIN
 #	SELECT COUNT(*) INTO param1 FROM `users`;
 #END$$
- 
+
 
 # Add user
 DROP PROCEDURE IF EXISTS adduser$$
