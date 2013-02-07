@@ -26,3 +26,7 @@ def getUserAssignments(username):
     items = cur.fetchall()
     cur.nextset()
     return items
+
+def storeUserAssignments(username, aID, aName, aCID, aDiff, aDate):
+    cur.callproc('storeuserassignments',(username, aID, aName, aCID, aDiff, aDate))
+    db.commit()

@@ -74,8 +74,17 @@ class ScheduleHandler(TemplateHandler):
 
   def post(self):
     data = self.request.get('bunchesofdata')
-    print(data)
-    inserts ={}
+    username = self.request.get('username')
+    data = json.loads(data)
+    print(data['itemslist'][0]['itemDiff']['diff'])
+    storeUserAssignments(username, data['itemslist'][0]['itemID'], data['itemslist'][0]['itemName'], data['itemslist'][0]['itemCourse']['courseID'], data['itemslist'][0]['itemDiff']['diff'], data['itemslist'][0]['itemDate'])
+
+    print("hello")
+
+
+    schedule = getUserAssignments(username)
+    jsonschedule = json.dumps(schedule, default=dthandler)
+    inserts={'username': username, 'items':jsonschedule}
     self.renderFile("project.html", **inserts)
 
 class SignupHandler(TemplateHandler):

@@ -97,19 +97,20 @@
 
 		console.log(items);
 
-		function Item(name, course, diff, duedate){
+		function Item(name, course, diff, duedate, id){
 			var self = this;
 
 			self.itemName = ko.observable(name);
 			self.itemCourse = ko.observable(course);
 			self.itemDiff = ko.observable(diff);
-			self.itemDate = ko.observable(duedate);	
+			self.itemDate = ko.observable(duedate);
+			self.itemID = id;	
 			//self.itemPriority = ko.computed();
 		}
 		function parseAssignments(items){
 			itmlist =[];
 			for(var i=0; i<items.length; i++){
-				itmlist.push(new Item( items[i].AssignmentName, items[i].CourseName, items[i].D, items[i].Complete_by));
+				itmlist.push(new Item( items[i].AssignmentName, items[i].CourseName, items[i].D, items[i].Complete_by, items[i].AssignmentID));
 			}
 			return itmlist;
 		}
@@ -151,7 +152,7 @@
 			self.itemslist = ko.observableArray(itemsarray);
 
 			self.addItem = function() {
-				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date()));
+				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
 			}
 
 			self.removeItem = function(itm){
