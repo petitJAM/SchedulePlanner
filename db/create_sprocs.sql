@@ -204,6 +204,7 @@ CREATE PROCEDURE getuserassignments (username varchar(20))
 BEGIN
 	SELECT 
 		a.`Name` AS `AssignmentName`,
+		a.`IID` AS `AssignmentID`,
 		`items`.`Complete_by` AS `Complete_by`,
 		`items`.`Priority` AS `P`,
 		`items`.`Notes` AS `Notes`,
@@ -236,7 +237,7 @@ delimiter $$
 USE `scheduleplanner`$$
 DROP PROCEDURE IF EXISTS storeuserassignments$$
 CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11),
- aname varchar(45), acid varchar(45), adiff tinyint(4), aduedate varchar(10))
+ aname varchar(45), acid varchar(45), adiff tinyint(4), aduedate varchar(25))
 BEGIN
 
 	IF (EXISTS (SELECT * FROM `assignments` WHERE `IID` = aid)) THEN
@@ -244,26 +245,32 @@ BEGIN
 		
 		SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
 				INTO @duedate, @course, @diff, @cid
-			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid;
+			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid GROUP BY `items`.`IID`;
 		
 		UPDATE `assignments` SET `Name` = aname WHERE `IID` = aid;
+		commit;
 
 		IF (adiff != @diff)THEN
 			UPDATE `items` SET `Difficulty` = adiff WHERE `SID` = @SID AND `IID` = aid;
+			commit;
 		END IF;
 
 		IF (aduedate != @duedate) THEN
 			UPDATE `items` SET `Complete_by` = aduedate WHERE `SID` = @SID AND `IID` = aid;
+			commit;
 		END IF;
 
 		IF (acid != @cid) THEN
 			UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
+			commit;
 		END IF;
 	ELSE
 		# new
 		INSERT INTO `assignments` (`Name`) VALUES (aname);
+		commit;
 		INSERT INTO `items` (`SID`, `CID`, `Difficulty`, `Complete_by`)
 					 VALUES (@SID, acid, adiff, DATE(aduedate));
+		commit;
 	END IF;
 	
 
