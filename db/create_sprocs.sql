@@ -208,7 +208,8 @@ BEGIN
 		`items`.`Priority` AS `P`,
 		`items`.`Notes` AS `Notes`,
 		`items`.`Difficulty` AS `D`,
-		`courses`.`Name` AS `CourseName`
+		`courses`.`Name` AS `CourseName`,
+		`couses`.`CID` AS `CourseID`
 	FROM 
 		((((
 		`assignments` a 
