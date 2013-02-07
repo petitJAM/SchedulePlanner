@@ -19,30 +19,14 @@ import webapp2
 
 import cgi
 import re
-import MySQLdb
+
+from db import *
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASSWORD_RE = re.compile(r"^.{3,20}$")
 EMAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
 
-db = MySQLdb.connect(host = "localhost",
-                        user = "scheduler",
-                        passwd ="password123",
-                        db ="scheduleplanner")
-cur = db.cursor()
-
-def InsertUserIntoDB(username,email,password):
-
-  cur.execute("CALL adduser (%s,%s,%s)", (username, email, password))
-  db.commit()
-
-def VerifyExistingUser(username, password):
-
-  checker =0
-  cur.execute("SELECT verifyusernamepassword(%s,SHA1(%s))",(username,password))
-  checker = cur.fetchone()[0]
-  return checker
 
 def escape(txt):
     """Escape out special HTML characters in string"""
@@ -101,7 +85,7 @@ class SignupHandler(webapp2.RequestHandler):
         inserts['email'] = escape(email)
 
         if is_valid:
-            InsertUserIntoDB(inserts['username'], inserts['email'], password)
+            addUser(inserts['username'], inserts['email'], password)
             self.redirect('/login/welcome?username='+username)
         else:
             self.response.out.write(signup_form % inserts)
@@ -125,7 +109,7 @@ class LoginHandler (webapp2.RequestHandler):
         email = self.request.get('email')
 
         # Tests below set the error message in inserts appropriately
-        if not VerifyExistingUser(username, password):
+        if not verifyUserExists(username, password):
             inserts['username_err'] = "Your Username and Password do not match" 
 
         # If any error message was set, then inserts[key]!=''
