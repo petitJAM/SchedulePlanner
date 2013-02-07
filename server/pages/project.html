@@ -65,8 +65,9 @@
 				</tbody>
 			</table>
 			<a href='#' data-bind='click: $root.addItem'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
-			<br/>
-			<input type="submit" class="btn">
+			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: hidden;"></textarea>
+			<input class="btn" type="submit"></input>
+
 		</form>
 	</div>
 	
@@ -81,7 +82,7 @@
 	</div>
 
 	<br><br><br><br>
-	<pre data-bind="text:ko.toJSON($root, null, 2)"></pre>
+	
 
 
 	<!--  -->
@@ -94,35 +95,50 @@
 		};
 		var items = getData();
 
-		
+		console.log(items);
 
-		function Item(name, course, diff, duedate){
+		function Item(name, course, diff, duedate, id){
 			var self = this;
 
 			self.itemName = ko.observable(name);
 			self.itemCourse = ko.observable(course);
 			self.itemDiff = ko.observable(diff);
-			self.itemDate = ko.observable(duedate);	
+			self.itemDate = ko.observable(duedate);
+			self.itemID = id;	
 			//self.itemPriority = ko.computed();
 		}
-		function parseData(items){
+		function parseAssignments(items){
 			itmlist =[];
 			for(var i=0; i<items.length; i++){
-				itmlist.push(new Item( items[i].AssignmentName, items[i].CourseName, items[i].D, items[i].Complete_by));
+				itmlist.push(new Item( items[i].AssignmentName, items[i].CourseName, items[i].D, items[i].Complete_by, items[i].AssignmentID));
 			}
 			return itmlist;
 		}
-		var itemsarray = parseData(items);
-		console.log(itemsarray);
-		function ItemViewModel (itemsarray){
+		function parseCourses(items){
+			cList =[];
+			for(var i=0; i<items.length; i++){
+				var inList =false;
+				for(var j=0; j<cList.length; j++){
+					if(cList[j].courseID = items[i].CourseID){
+						inList =true;
+					}
+				}
+				if(inList){
+					continue;
+				}else{
+					cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID})
+				}
+
+			}
+			return cList;
+		}
+
+		var itemsarray = parseAssignments(items);
+		var coursesarray = parseCourses(items);
+		console.log(coursesarray);
+		function ItemViewModel (itemsarray, coursesarray){
 			var self =this;
-			self.courses = [
-			{courseName:"ChooseOne", courseDiff: 0},
-			{courseName: "Databases", courseDiff: 5},
-			{courseName: "Theory of Computation", courseDiff: 5},
-			{courseName: "Tech Com", courseDiff: 5},
-			{courseName: "Junior Project", courseDiff: 5},
-			];
+			self.courses = coursesarray;
 
 			self.difficultyValues = [
 			{diffName: "ChooseOne", diff: 0},
@@ -136,16 +152,20 @@
 			self.itemslist = ko.observableArray(itemsarray);
 
 			self.addItem = function() {
-				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date()));
+				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
 			}
 
 			self.removeItem = function(itm){
 				self.itemslist.remove(itm)
 			}
+
 		}
-		ko.applyBindings(new ItemViewModel(itemsarray));
+		ko.applyBindings(new ItemViewModel(itemsarray, coursesarray));
 	//formatting
-})
+
+	
+	
+})	
 
 
 

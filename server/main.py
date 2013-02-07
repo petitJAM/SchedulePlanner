@@ -20,8 +20,9 @@ import webapp2
 import cgi, os, re
 import MySQLdb
 import jinja2
-
-import json, datetime
+import datetime
+import json
+import urllib2
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
 
 from dbqueries import *
@@ -72,14 +73,18 @@ class ScheduleHandler(TemplateHandler):
     self.renderFile("project.html", **inserts)
 
   def post(self):
+    data = self.request.get('bunchesofdata')
     username = self.request.get('username')
+    data = json.loads(data)
+    for i in range(0, len(data['itemslist'])):
+      storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'],
+       data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'],
+        data['itemslist'][i]['itemDate'])
 
-    # update
-    print self.request.get('')
 
     schedule = getUserAssignments(username)
     jsonschedule = json.dumps(schedule, default=dthandler)
-    inserts ={'username': username, 'items':jsonschedule}
+    inserts={'username': username, 'items':jsonschedule}
     self.renderFile("project.html", **inserts)
 
 class SignupHandler(TemplateHandler):
