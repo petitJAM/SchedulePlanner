@@ -16,6 +16,8 @@
 #
 
 import webapp2
+from webapp2_extras import session
+from google.appengine.ext import db
 
 import cgi
 import re
@@ -41,6 +43,9 @@ def valid_password(password):
 def valid_email(email):
     return email and EMAIL_RE.match(email)
 
+
+
+
 class SignupHandler(webapp2.RequestHandler):
 
     def get(self):
@@ -49,9 +54,6 @@ class SignupHandler(webapp2.RequestHandler):
         self.response.out.write(signup_form % inserts)
 
     def post(self):
-
-        is_valid = True
-    
         inserts = {'username_err':'', 'password_err':'', 'verify_err':'', 'email_err':'',
                     'username':'', 'email':''}
 
@@ -73,7 +75,7 @@ class SignupHandler(webapp2.RequestHandler):
             if not valid_email(email):
                 inserts['email_err'] = "That's not a valid email."
 
-
+        is_valid = True
         # If any error message was set, then inserts[key]!=''
         # so set is_valid False and break
         for key in inserts:
@@ -127,6 +129,12 @@ class LoginHandler (webapp2.RequestHandler):
         else:
             self.response.out.write(login_form % inserts)
 
+class ScheduleViewHandler(webapp2.RequestHandler):
+    def get(self):
+        username = self.request.get('username')
+        self.response.out.write("Not done")
+
+
 class WelcomeHandler(webapp2.RequestHandler):
     def get(self):
         username = self.request.get('username')
@@ -135,7 +143,6 @@ class WelcomeHandler(webapp2.RequestHandler):
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         self.response.out.write(homeform)
-
 
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
