@@ -18,7 +18,7 @@ def addUser(username,email,password):
 def verifyUserExists(username, password):
     checker = 0
     cur.execute("SELECT verifyusernamepassword(%s,SHA1(%s))",(username,password))
-    checker = cur.fetchone()[0]
+    checker = cur.fetchone()
     return checker
 
 def getUserSchedule(username):

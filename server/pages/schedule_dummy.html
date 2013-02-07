@@ -18,13 +18,13 @@
   </div>
 </div>
 <div id="items" class="container content">
-  <p></p>
+  <p id="item"></p>
 </div>
 <script src="assets/bootstrap/js/bootstrap.js"></script>
 <script>
   istr = '{{items}}'.replace(/&#34;/g, '"');
   items = JSON.parse(istr);
-  alert(istr);
+  document.getElementById("item").innerHTML = istr;
 
 </script>
 </body>
