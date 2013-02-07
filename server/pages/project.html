@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<title>itsvismay</title>
+	<title>Ideer</title>
 	<!-- styles stuff -->
 	<link type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css" media="screen">
 	<!-- knockout stuff -->
@@ -35,9 +35,6 @@
   </div>
 </div>
 <div class="container content">
-	<script type="text/javascript">
-		 
-	</script>
  <div style="width:800px; margin:0 auto;">
   	<br></br>
   	<form action='/someServerSideHandler'>
@@ -120,6 +117,13 @@
 
 	<script type="text/javascript">
 	$(function(){
+		items = (function() {
+			istr = '{{items}}'.replace(/&#34;/g, '"');
+			items = JSON.parse(istr);
+			return items
+		})();
+		console.log(items);
+
 
 		var keywords =[
 		{"word":"project", "importance":3, "timesink":5},

@@ -35,9 +35,6 @@
   </div>
 </div>
 <div class="container content">
-	<script type="text/javascript">
-		 
-	</script>
  <div style="width:800px; margin:0 auto;">
   	<br></br>
   	<form action='/someServerSideHandler'>
@@ -46,18 +43,12 @@
 				<tr>
 					<th><font size="5">Category name</th>
 					<th><font size="5">Difficulty</th>
-					<th><font size="5">Teacher</th>
-					<th><font size="5">Difficulty</th>
-					<th />
 				</tr>
 			</thead>
 			<tbody data-bind='foreach: categories'>
 				<tr>
 					<td><input class='required' type="text" data-bind='value:ctgName, uniqueName: true' /></td>
 					<td><select data-bind="options: $root.difficultyValues, value: ctgDifficulty, optionsText: 'diffName' "></select></td>
-					<td><input class='required' type="text" data-bind='value:ctgName, uniqueName: true' /></td>
-					<td><select data-bind="options: $root.difficultyValues, value: ctgDifficulty, optionsText: 'diffName' "></select></td>
-
 					
 					<td><a href='#' data-bind='click: $root.removeCategory'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
 				</tr>
