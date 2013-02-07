@@ -53,10 +53,9 @@
 
 						<td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'courseName' "></select></td>
 
-						<td><select data-bind="options: $root.difficultyValues, value: itemDiff, optionsText: 'diffName' ">
-						</select></td>
+						<td><select data-bind="options: $root.difficultyValues, value: itemDiff, optionsText: 'diffName' "></select></td>
 
-						<td><input style="height:30px;" type="date" name="duedate"></input></td>
+						<td><input style="height:30px;" type="date" name="duedate"></td>
 
 						<td><a href='#' data-bind='click: $root.removeItem'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
 
@@ -65,8 +64,8 @@
 				</tbody>
 			</table>
 			<a href='#' data-bind='click: $root.addItem'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
-			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" type="hidden"></textarea>
-			<input class="btn" type="submit"></input>
+			<!-- <textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" type="hidden"></textarea> -->
+			<input class="btn" type="submit">
 
 		</form>
 	</div>
@@ -160,7 +159,7 @@
 
 			self.submitMe = function() {
 				// gather myself for posting
-				return self.toJSON
+				return ko.toJSON($root, null, 2);
 			}
 		}
 		ko.applyBindings(new ItemViewModel(itemsarray, coursesarray));
