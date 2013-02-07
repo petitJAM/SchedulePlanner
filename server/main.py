@@ -171,7 +171,7 @@ class MainHandler(TemplateHandler):
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
-                                ('/login/welcome/userschedule',ScheduleHandler),
+                                ('/scheduler',ScheduleHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
 
