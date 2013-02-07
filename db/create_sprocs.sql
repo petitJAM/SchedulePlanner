@@ -219,31 +219,32 @@ BEGIN
 		WHERE `users`.`Name` = username;
 END$$
 
-
+delimiter $$
+USE `scheduleplanner`$$
 DROP PROCEDURE IF EXISTS storeuserassignments$$
-CREATE PROCEDURE storeuserassignments (username varchar(20), aname varchar(45), acourse varchar(45), adiff tinyint(4), aduedate datetime)
+CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11),
+ aname varchar(45), acid varchar(45), adiff tinyint(4), aduedate datetime)
 BEGIN
 	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
 	
-	SELECT `items`.`Complete_by`,  `courses`.`Name`, `items`.`Difficulty` INTO @duedate, @course, @diff
-	FROM `items`, `courses` WHERE `SID` =@SID;
-
+	SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
+	INTO @duedate, @course, @diff, @cid
+	FROM `items`, `courses` WHERE `SID` =@SID AND `IID` = aid;
 	
+	UPDATE `assignments` SET `Name` = aname WHERE `IID` = aid;
+
+	IF (adiff != @diff)THEN
+		UPDATE `items` SET `Difficulty` = adiff WHERE `SID` = @SID AND `IID` = aid;
+	END IF;
 
 	IF (aduedate != @duedate) THEN
-	BEGIN
-			UPDATE `items` SET `Complete_by` = aduedate WHERE `SID` = @SID;
-	END;
+		UPDATE `items` SET `Complete_by` = aduedate WHERE `SID` = @SID AND `IID` = aid;
+	END IF;
 
-	IF (acourse != @course) THEN
-	BEGIN
-			UPDATE `items` SET `CID` = @course WHERE `SID` = @SID;
-	END;
+	IF (acid != @cid) THEN
+		UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
+	END IF;
 
-	IF (adiff != @diff) THEN
-	BEGIN
-			UPDATE `items` SET `Difficulty` = @course WHERE `SID` = @SID;
-	END;
 	
 	
 	#INSERT INTO `assignments`();
