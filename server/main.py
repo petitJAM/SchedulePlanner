@@ -62,6 +62,7 @@ def valid_email(email):
 
 class ScheduleHandler(TemplateHandler):
   def get(self):
+
     inserts={}
     self.renderFile("project.html", **inserts)
 
@@ -163,6 +164,11 @@ class WelcomeHandler(TemplateHandler):
         inserts = {'username': username}
         self.renderFile("welcomeUser.html", **inserts)
 
+    def post(self):
+        username = self.request.get('username')
+        username = str(username)
+        self.redirect('scheduler?username='+username)
+
 class MainHandler(TemplateHandler):
     def get(self):
         self.renderFile("index.html")
@@ -171,7 +177,7 @@ class MainHandler(TemplateHandler):
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
-                                ('/scheduler',ScheduleHandler),
+                                ('/login/scheduler',ScheduleHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
 
