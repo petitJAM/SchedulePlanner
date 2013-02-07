@@ -11,7 +11,7 @@ db = MySQLdb.connect(host = "localhost",
 cur = db.cursor()
 
 def addUser(username,email,password):
-    cur.execute("CALL adduser (%s,%s,%s)", (username, email, password))
+    cur.callproc('adduser', (username, email, password))
     db.commit()
 
 def verifyUserExists(username, password):
@@ -21,4 +21,5 @@ def verifyUserExists(username, password):
     return checker
 
 def getUserSchedule(username):
-    return None
+    cur.callproc('getuseritems', ('petitjam'))
+    return cur.fetchone()
