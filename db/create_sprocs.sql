@@ -209,7 +209,7 @@ BEGIN
 		`items`.`Notes` AS `Notes`,
 		`items`.`Difficulty` AS `D`,
 		`courses`.`Name` AS `CourseName`,
-		`couses`.`CID` AS `CourseID`
+		`courses`.`CID` AS `CourseID`
 	FROM 
 		((((
 		`assignments` a 
@@ -220,35 +220,52 @@ BEGIN
 		WHERE `users`.`Name` = username;
 END$$
 
+DROP PROCEDURE IF EXISTS getusercourses$$
+CREATE PROCEDURE getusercourses (username varchar(20))
+BEGIN
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT
+		username AS `UserName`,
+		`courses`.`CID` AS `CourseID`,
+		`courses`.`Name` AS `CourseName`
+	FROM `coursesinschedules`, `courses`
+		WHERE `SID` = @SID;
+END$$
+
 delimiter $$
 USE `scheduleplanner`$$
 DROP PROCEDURE IF EXISTS storeuserassignments$$
 CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11),
- aname varchar(45), acid varchar(45), adiff tinyint(4), aduedate datetime)
+ aname varchar(45), acid varchar(45), adiff tinyint(4), aduedate varchar(10))
 BEGIN
-	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
-	
-	SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
-	INTO @duedate, @course, @diff, @cid
-	FROM `items`, `courses` WHERE `SID` =@SID AND `IID` = aid;
-	
-	UPDATE `assignments` SET `Name` = aname WHERE `IID` = aid;
 
-	IF (adiff != @diff)THEN
-		UPDATE `items` SET `Difficulty` = adiff WHERE `SID` = @SID AND `IID` = aid;
+	IF (EXISTS (SELECT * FROM `assignments` WHERE `IID` = aid)) THEN
+		SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+		
+		SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
+				INTO @duedate, @course, @diff, @cid
+			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid;
+		
+		UPDATE `assignments` SET `Name` = aname WHERE `IID` = aid;
+
+		IF (adiff != @diff)THEN
+			UPDATE `items` SET `Difficulty` = adiff WHERE `SID` = @SID AND `IID` = aid;
+		END IF;
+
+		IF (aduedate != @duedate) THEN
+			UPDATE `items` SET `Complete_by` = aduedate WHERE `SID` = @SID AND `IID` = aid;
+		END IF;
+
+		IF (acid != @cid) THEN
+			UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
+		END IF;
+	ELSE
+		# new
+		INSERT INTO `assignments` (`Name`) VALUES (aname);
+		INSERT INTO `items` (`SID`, `CID`, `Difficulty`, `Complete_by`)
+					 VALUES (@SID, acid, adiff, DATE(aduedate));
 	END IF;
-
-	IF (aduedate != @duedate) THEN
-		UPDATE `items` SET `Complete_by` = aduedate WHERE `SID` = @SID AND `IID` = aid;
-	END IF;
-
-	IF (acid != @cid) THEN
-		UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
-	END IF;
-
 	
-	
-	#INSERT INTO `assignments`();
 
 END$$
 	
