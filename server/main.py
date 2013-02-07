@@ -63,6 +63,14 @@ def valid_password(password):
 def valid_email(email):
     return email and EMAIL_RE.match(email)
 
+class ScheduleHandler(TemplateHandler):
+  def get(self):
+    inserts={}
+    self.renderFile("project.html", **inserts)
+
+  def post(self):
+    inserts ={}
+    self.renderFile("project.html", **inserts)
 
 class SignupHandler(TemplateHandler):
     def get(self):
@@ -108,7 +116,6 @@ class SignupHandler(TemplateHandler):
             self.redirect('/login/welcome?username='+username)
         else:
             self.renderFile("signUpForm.html", **inserts)
-
 
 class LoginHandler (TemplateHandler):
     def get(self):
@@ -167,6 +174,7 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login',LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
                                 ('/login/schedule', ScheduleViewHandler),
+                                ('/scheduler',ScheduleHandler),
                                 ('/',MainHandler)], 
                                 debug=True)
 

@@ -12,8 +12,15 @@ handlers:
 - url: /assets/bootstrap
   static_dir: assets/bootstrap
 
+- url: /assets/components
+  static_dir: assets/components
+
 - url: .*
   script: main.app
+
+- url: /page/img\.png
+  static_dir: page/img\.png
+
 
 libraries:
 - name: webapp2
