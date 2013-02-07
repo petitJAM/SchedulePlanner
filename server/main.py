@@ -76,10 +76,10 @@ class ScheduleHandler(TemplateHandler):
     data = self.request.get('bunchesofdata')
     username = self.request.get('username')
     data = json.loads(data)
-    print(data['itemslist'][0]['itemDiff']['diff'])
-    storeUserAssignments(username, data['itemslist'][0]['itemID'], data['itemslist'][0]['itemName'], data['itemslist'][0]['itemCourse']['courseID'], data['itemslist'][0]['itemDiff']['diff'], data['itemslist'][0]['itemDate'])
-
-    print("hello")
+    for i in range(0, len(data['itemslist'])):
+      storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'],
+       data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'],
+        data['itemslist'][i]['itemDate'])
 
 
     schedule = getUserAssignments(username)
