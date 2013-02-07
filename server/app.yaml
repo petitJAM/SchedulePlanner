@@ -15,9 +15,12 @@ handlers:
 - url: /assets/components
   static_dir: assets/components
 
+- url: /img
+  static_dir: pages/img
+
 - url: .*
   script: main.app
-  
+
 
 libraries:
 - name: webapp2
