@@ -22,9 +22,12 @@
 </div>
 <script src="assets/bootstrap/js/bootstrap.js"></script>
 <script>
-  istr = '{{items}}'.replace(/&#34;/g, '"');
-  items = JSON.parse(istr);
-  document.getElementById("item").innerHTML = istr;
+  items = (function() {
+    istr = '{{items}}'.replace(/&#34;/g, '"');
+    items = JSON.parse(istr);
+    document.getElementById("item").innerHTML = istr;
+    return items
+  })();
 
 </script>
 </body>
