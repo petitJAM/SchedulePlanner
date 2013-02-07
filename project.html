@@ -40,6 +40,8 @@
 				<tr>
 					<th><font size="5">Category name</th>
 					<th><font size="5">Difficulty</th>
+					<th><font size="5">Teacher</th>
+					<th><font size="5">Difficulty</th>
 					<th />
 				</tr>
 			</thead>
@@ -47,7 +49,10 @@
 				<tr>
 					<td><input class='required' type="text" data-bind='value:ctgName, uniqueName: true' /></td>
 					<td><select data-bind="options: $root.difficultyValues, value: ctgDifficulty, optionsText: 'diffName' "></select></td>
+					<td><input class='required' type="text" data-bind='value:ctgName, uniqueName: true' /></td>
+					<td><select data-bind="options: $root.difficultyValues, value: ctgDifficulty, optionsText: 'diffName' "></select></td>
 
+					
 					<td><a href='#' data-bind='click: $root.removeCategory'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
 				</tr>
 			</tbody>
@@ -73,6 +78,7 @@
 					<td><select data-bind="options: $root.categories, value: todoItem.todoCtg, optionsText:'ctgName'"></select></td>
 					<td><input type="text" data-bind="value: todoItem.todoDate"/></td>
 					<td><a href="#" data-bind="click: $root.removeTodoItem"><button type="button" class="btn btn-info" data-toggle="button">Remove</button></a></td>
+
 				</tr>
 			</tbody>
 		</table>
