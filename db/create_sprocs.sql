@@ -224,8 +224,12 @@ DROP PROCEDURE IF EXISTS getusercourses$$
 CREATE PROCEDURE getusercourses (username varchar(20))
 BEGIN
 	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
-	SELECT * FROM `coursesinschedules`, `courses`
-				WHERE `SID` = @SID;
+	SELECT
+		username AS `UserName`,
+		`courses`.`CID` AS `CourseID`,
+		`courses`.`Name` AS `CourseName`
+	FROM `coursesinschedules`, `courses`
+		WHERE `SID` = @SID;
 END$$
 
 delimiter $$
