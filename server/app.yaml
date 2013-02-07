@@ -11,6 +11,7 @@ handlers:
 
 - url: /assets/bootstrap
   static_dir: assets/bootstrap
+  upload: assets/bootstrap
 
 - url: .*
   script: main.app
