@@ -1,7 +1,7 @@
 delimiter $$
 
 DROP VIEW IF EXISTS `user_items`$$
-CREATE VIEW `user_items` AS 
+CREATE VIEW `user_items` AS
 SELECT `u`.`UID` AS `UID`,
 	   `u`.`Name` AS `UserName`,
 	   `u`.`Active_SID` AS `SID`,
@@ -15,13 +15,13 @@ SELECT `u`.`UID` AS `UID`,
 	   `a`.`Name` AS `AssignmentName`,
 	   `m`.`Subject` AS `MeetingSubject`,
 	   `w`.`Start_time` AS `WorkStartTime`
- FROM 
-	`items` `i` 
-	left join `users` `u` on `i`.`SID` = `u`.`Active_SID` 
-	left join `courses` `c` on `i`.`CID` = `c`.`CID` 
-	left join `teachers` `t` on `c`.`TID` = `t`.`TID` 
-	left join `assignments` `a` on `i`.`IID` = `a`.`IID` 
-	left join `exams` `e` on `i`.`IID` = `e`.`IID` 
-	left join `meetings` `m` on `i`.`IID` = `m`.`IID` 
-	left join `reminders` `r` on `i`.`IID` = `r`.`IID`  
+ FROM
+	`items` `i`
+	left join `users` `u` on `i`.`SID` = `u`.`Active_SID`
+	left join `courses` `c` on `i`.`CID` = `c`.`CID`
+	left join `teachers` `t` on `c`.`TID` = `t`.`TID`
+	left join `assignments` `a` on `i`.`IID` = `a`.`IID`
+	left join `exams` `e` on `i`.`IID` = `e`.`IID`
+	left join `meetings` `m` on `i`.`IID` = `m`.`IID`
+	left join `reminders` `r` on `i`.`IID` = `r`.`IID`
 	left join `works` `w` on `i`.`IID` = `w`.`IID`$$
