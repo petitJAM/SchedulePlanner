@@ -15,10 +15,7 @@ handlers:
 
 - url: .*
   script: main.app
-
-- url: /page/img\.png
-  static_dir: page/img\.png
-
+  
 
 libraries:
 - name: webapp2
