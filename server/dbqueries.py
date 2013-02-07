@@ -23,4 +23,6 @@ def verifyUserExists(username, password):
 
 def getUserSchedule(username):
     cur.callproc('getuseritems', (username,))
-    return cur.fetchall()
+    items = cur.fetchall()
+    cur.nextset()
+    return items
