@@ -1,10 +1,6 @@
 <html>
 <head>
   <link type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css" media="screen">
-  <!-- jquery stuff -->
-  <link href="../assets/components/jquery-ui-1.9.1.custom/css/start/jquery-ui-1.9.1.custom.css" rel="stylesheet">
-  <script src="../assets/components/jquery-ui-1.9.1.custom/js/jquery-1.8.2.js"></script>
-  <script src="../assets/components/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.js"></script>
 </head>
 <body style="padding-top: 60px;">
 <div class="navbar navbar-fixed-top">
@@ -13,7 +9,7 @@
       <a class="brand" href="/">Schedule Planner</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li><a href="/">Home</a></li>
+          <li class="active"><a href="/">Home</a></li>
           <li><a href="/users">Users</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
@@ -21,14 +17,18 @@
     </div>
   </div>
 </div>
-<div class="container content">
- <div style="width:800px; margin:0 auto;">
-  <h2>Hello {{username}} </h2>
- </div>
- <form method="post">
-    <input class="btn" type="submit" value="Go to Schedule"></input>
- </form>
+<div id="items" class="container content">
+  <p id="item"></p>
 </div>
 <script src="assets/bootstrap/js/bootstrap.js"></script>
+<script>
+  items = (function() {
+    istr = '{{items}}'.replace(/&#34;/g, '"');
+    items = JSON.parse(istr);
+    document.getElementById("item").innerHTML = istr;
+    return items
+  })();
+
+</script>
 </body>
 </html>
