@@ -74,6 +74,11 @@ class ScheduleHandler(TemplateHandler):
 
   def post(self):
     username = self.request.get('username')
+    data = json.loads(data)
+    for i in range(0, len(data['itemslist'])):
+      storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'],
+       data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'],
+        data['itemslist'][i]['itemDate'])
 
     # update
     print self.request.get('courses')
