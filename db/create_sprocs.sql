@@ -316,8 +316,10 @@ BEGIN
 		username AS `UserName`,
 		c.`CID` AS `CourseID`,
 		c.`Name` AS `CourseName`,
+		c.`Difficulty`AS `CourseDiff`,
 		t.`TID` AS `TeacherID`,
-		t.`Name`AS `TeacherName`
+		t.`Name`AS `TeacherName`,
+		t.`Difficulty` AS `TeacherDiff`
 
 	FROM 
 		`coursesinschedules` cis
