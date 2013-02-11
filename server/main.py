@@ -64,6 +64,17 @@ def valid_password(password):
 def valid_email(email):
     return email and EMAIL_RE.match(email)
 
+class CoursesHandler(TemplateHandler):
+    def get(self):
+        username = self.request.get('username')
+        inserts['username': username]
+        self.renderFile("usercourses.html", **inserts)
+
+    def post(self):
+        username = self.request.get('username')
+        inserts['username': username]
+        self.renderFile("usercourses.html", **inserts)        
+
 class AssignmentsHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
@@ -91,7 +102,12 @@ class AssignmentsHandler(TemplateHandler):
         self.renderFile("assignments.html", **inserts)
 
 class ExamHandler(TemplateHandler):
-    pass
+    def get(self):
+        username = self.request.get('username')
+        schedule = getUserWork(username)
+        jsonschedule = json.dumps(schedule, default=dthandler)
+        inserts={'username': username, 'items':jsonschedule}
+        self.renderFile("assignments.html", **inserts)
 
 class WorkHandler(TemplateHandler):
     def get(self):
@@ -238,6 +254,7 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login/scheduler/work', WorkHandler),
                                 ('/login/scheduler/reminder', ReminderHandler),
                                 ('/login/scheduler/meeting', MeetingHandler),
+                                ('/login/courses', CoursesHandler),
                                 ('/', MainHandler),
                                 ('/contact', ContactHandler)], 
                                 debug=True)

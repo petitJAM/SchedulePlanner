@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<title>Ideer</title>
 	<!-- styles stuff -->
-	<link type="text/css" rel="stylesheet" href="/assets/bootstrap/css/bootstrap.css" media="screen">
+	<link type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css" media="screen">
 	<!-- knockout stuff -->
 	<script type="text/javascript" src="/assets/components/knockout-2.2.0.debug.js"></script>
 	<script type='text/javascript' src="http://knockoutjs.com/examples/resources/knockout.simpleGrid.1.3.js"></script>
@@ -12,7 +12,12 @@
 	<link href="/assets/components/jquery-ui-1.9.1.custom/css/start/jquery-ui-1.9.1.custom.css" rel="stylesheet">
 	<script src="/assets/components/jquery-ui-1.9.1.custom/js/jquery-1.8.2.js"></script>
 	<script src="/assets/components/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.js"></script>
+
+
+
+
 </head>
+
 
 <body style="padding-top: 60px;">
 	<div class="navbar navbar-fixed-top">
@@ -22,8 +27,8 @@
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li><a href="/">Home</a></li>
-						<li><a href="/login/courses">Courses</a></li>
-						<li><a href="/contact">Contact</a></li>
+						<li><a href="/users">Users</a></li>
+						<li><a href="#">Contact</a></li>
 					</ul>
 				</div>
 			</div>
@@ -36,19 +41,13 @@
 			<table data-bind="visible: itemslist().length>=0">
 				<thead>
 					<tr>
-						<th><font size="5">Name</font></th>
 						<th><font size="5">Course</font></th>
-						<th><font size ="5">Assignment Diff.</font></th>
-						<th><font size ="5">Due Date</font></th>
+						<th><font size ="5">Date</font></th>
 					</tr>
 				</thead>
 				<tbody data-bind='foreach: itemslist'>
 					<tr>
-						<td><input style="height:30px;" class='required' type="text" data-bind='value:itemName' /></td>
-
 						<td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'courseName' "></select></td>
-
-						<td><select data-bind="options: $root.difficultyValues, value: itemDiff, optionsText: 'diffName' "></select></td>
 
 						<td><input style="height:30px;" type="date" name="duedate"></td>
 
@@ -59,8 +58,7 @@
 				</tbody>
 			</table>
 			<a href='#' data-bind='click: $root.addItem'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
-			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
-			<input class="btn" type="submit">
+			<input class="btn" type="submit"></input>
 
 		</form>
 	</div>
@@ -75,78 +73,61 @@
 		</ul>
 	</div>
 
-	<p id='testy'></p>
-	<script>
-		cstr = '{{courses}}'.replace(/&#34;/g, '"');
-		courses = JSON.parse(cstr);
-		console.log(courses[0]);
-	</script>
-
 	<br><br><br><br>
+	
+
 
 	<!--  -->
 	<script type="text/javascript">
 	$(function(){
-		function getItems() {
+		function getData() {
 			istr = '{{items}}'.replace(/&#34;/g, '"');
-			return JSON.parse(istr);
+			items = JSON.parse(istr);
+			return items
 		};
+		var items = getData();
 
-		function getCourses() {
-			cstr = '{{courses}}'.replace(/&#34;/g, '"');
-			return JSON.parse(cstr);
-		}
+		console.log(items);
 
-		var items = getItems(), courses = getCourses();
-
-		// console.log(items);
-		// console.log(courses);
-
-		function Item(name, course, diff, duedate, id){
+		function Item(course, date){
 			var self = this;
 
-			self.itemName = ko.observable(name);
 			self.itemCourse = ko.observable(course);
-			self.itemDiff = ko.observable(diff);
-			self.itemDate = ko.observable(duedate);
-			self.itemID = id;	
+			self.itemDate = ko.observable(date);
 			//self.itemPriority = ko.computed();
 		}
-		function parseAssignments(items){
+		function parseExams(items){
 			itmlist =[];
 			for(var i=0; i<items.length; i++){
-				itmlist.push(new Item( items[i].AssignmentName, items[i].CourseName, items[i].D, items[i].Complete_by, items[i].AssignmentID));
+				itmlist.push(new Item(items[i].CourseName, items[i].Date));
 			}
 			return itmlist;
 		}
-		function parseCourses(courses){
-			cList = [];
-			courses.forEach(function(c, i) {
-				cList.push({courseName: c.CourseName, courseID: c.CourseID, isSelected: false});
-			});
-			// cList =[];
-			// for(var i=0; i<items.length; i++){
-			// 	var inList =false;
-			// 	for(var j=0; j<cList.length; j++){
-			// 		if(cList[j].courseID = items[i].CourseID){
-			// 			inList =true;
-			// 		}
-			// 	}
-			// 	if(inList){
-			// 		continue;
-			// 	}else{
-			// 		cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID, isSelected: false});
-			// 	}
+		function parseCourses(items){
+			cList =[];
+			for(var i=0; i<items.length; i++){
+				var inList =false;
+				for(var j=0; j<cList.length; j++){
+					if(cList[j].courseID = items[i].CourseID){
+						inList =true;
+					}
+				}
+				if(inList){
+					continue;
+				}else{
+					cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID})
+				}
 
-			// }
+			}
 			return cList;
 		}
 
 		var itemsarray = parseAssignments(items);
-		var coursesarray = parseCourses(courses);
+		var coursesarray = parseCourses(items);
+		console.log(coursesarray);
 		function ItemViewModel (itemsarray, coursesarray){
-			var self = this;
-			self.courses = ko.observableArray(coursesarray);
+			var self =this;
+			self.courses = coursesarray;
 
 			self.difficultyValues = [
 			{diffName: "ChooseOne", diff: 0},
@@ -160,11 +141,11 @@
 			self.itemslist = ko.observableArray(itemsarray);
 
 			self.addItem = function() {
-				self.itemslist.push(new Item("dummy text", self.courses[0], self.difficultyValues[0], new Date(), 100));
+				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
 			}
 
 			self.removeItem = function(itm){
-				self.itemslist.remove(itm);
+				self.itemslist.remove(itm)
 			}
 
 			self.submitMe = function() {
@@ -174,7 +155,15 @@
 		}
 		ko.applyBindings(new ItemViewModel(itemsarray, coursesarray));
 	//formatting
-})
+
+	
+	
+})	
+
+
+
+
+
 </script>
 
 <script src="/assets/bootstrap/js/bootstrap.js"></script>

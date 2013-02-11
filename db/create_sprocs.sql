@@ -13,7 +13,7 @@ DROP PROCEDURE IF EXISTS countusers$$
 #BEGIN
 #	SELECT COUNT(*) INTO param1 FROM `users`;
 #END$$
-
+ 
 
 # Add user
 DROP PROCEDURE IF EXISTS adduser$$
@@ -315,8 +315,11 @@ BEGIN
 	SELECT
 		username AS `UserName`,
 		`courses`.`CID` AS `CourseID`,
-		`courses`.`Name` AS `CourseName`
-	FROM `coursesinschedules`, `courses`
+		`courses`.`Name` AS `CourseName`,
+		`teachers`.`TID` AS `TeacherID`,
+		`teachers`.`Name`AS `TeacherName`
+
+	FROM `coursesinschedules`, `courses`,`teachers`
 		WHERE `SID` = @SID;
 END$$
 

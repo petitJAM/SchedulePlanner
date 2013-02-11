@@ -22,7 +22,7 @@ def verifyUserExists(username, password):
     checker = 0
     cur.execute("SELECT verifyusernamepassword(%s,SHA1(%s))",(username,password))
     checker = cur.fetchone()
-    cur = db.cursor()
+    cur.close()
     return checker
 
 def getUserCourses(username):
@@ -77,3 +77,14 @@ def storeUserAssignments(username, aID, aName, aCID, aDiff, aDate):
     cur = db.cursor()
     cur.callproc('storeuserassignments',(username, aID, aName, aCID, aDiff, aDate))
     cur.close()
+
+def getUserCourses(username):
+    cur = db.cursor()
+    cur.callproc('getusercourses',(username,))
+    courses = cur.fetchall()
+    cur.nextset()
+    cur.close()
+    return courses
+
+def storeUserCourses():
+            

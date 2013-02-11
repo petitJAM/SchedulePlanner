@@ -33,16 +33,16 @@
 	<div class="container-fluid content">
 		<h1></h1>
 		<form method="post" data-bind="submit:submitMe">
-			<table data-bind="visible: itemslist().length>=0">
+			<table data-bind="visible: courseslist().length>=0">
 				<thead>
 					<tr>
-						<th><font size="5">Name</font></th>
 						<th><font size="5">Course</font></th>
-						<th><font size ="5">Assignment Diff.</font></th>
-						<th><font size ="5">Due Date</font></th>
+						<th><font size ="5">Course Diff.</font></th>
+						<th><font size ="5">Teacher</font></th>
+						<th><font size ="5">Teacher Diff.</font></th>
 					</tr>
 				</thead>
-				<tbody data-bind='foreach: itemslist'>
+				<tbody data-bind='foreach: courseslist'>
 					<tr>
 						<td><input style="height:30px;" class='required' type="text" data-bind='value:itemName' /></td>
 
@@ -75,32 +75,19 @@
 		</ul>
 	</div>
 
-	<p id='testy'></p>
-	<script>
-		cstr = '{{courses}}'.replace(/&#34;/g, '"');
-		courses = JSON.parse(cstr);
-		console.log(courses[0]);
-	</script>
-
 	<br><br><br><br>
 
 	<!--  -->
 	<script type="text/javascript">
 	$(function(){
-		function getItems() {
+		function getData() {
 			istr = '{{items}}'.replace(/&#34;/g, '"');
-			return JSON.parse(istr);
+			items = JSON.parse(istr);
+			return items
 		};
+		var items = getData();
 
-		function getCourses() {
-			cstr = '{{courses}}'.replace(/&#34;/g, '"');
-			return JSON.parse(cstr);
-		}
-
-		var items = getItems(), courses = getCourses();
-
-		// console.log(items);
-		// console.log(courses);
+		console.log(items);
 
 		function Item(name, course, diff, duedate, id){
 			var self = this;
@@ -119,34 +106,31 @@
 			}
 			return itmlist;
 		}
-		function parseCourses(courses){
-			cList = [];
-			courses.forEach(function(c, i) {
-				cList.push({courseName: c.CourseName, courseID: c.CourseID, isSelected: false});
-			});
-			// cList =[];
-			// for(var i=0; i<items.length; i++){
-			// 	var inList =false;
-			// 	for(var j=0; j<cList.length; j++){
-			// 		if(cList[j].courseID = items[i].CourseID){
-			// 			inList =true;
-			// 		}
-			// 	}
-			// 	if(inList){
-			// 		continue;
-			// 	}else{
-			// 		cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID, isSelected: false});
-			// 	}
+		function parseCourses(items){
+			cList =[];
+			for(var i=0; i<items.length; i++){
+				var inList =false;
+				for(var j=0; j<cList.length; j++){
+					if(cList[j].courseID = items[i].CourseID){
+						inList =true;
+					}
+				}
+				if(inList){
+					continue;
+				}else{
+					cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID})
+				}
 
-			// }
+			}
 			return cList;
 		}
 
 		var itemsarray = parseAssignments(items);
-		var coursesarray = parseCourses(courses);
+		var coursesarray = parseCourses(items);
+		console.log(coursesarray);
 		function ItemViewModel (itemsarray, coursesarray){
 			var self = this;
-			self.courses = ko.observableArray(coursesarray);
+			self.courses = coursesarray;
 
 			self.difficultyValues = [
 			{diffName: "ChooseOne", diff: 0},
@@ -160,7 +144,7 @@
 			self.itemslist = ko.observableArray(itemsarray);
 
 			self.addItem = function() {
-				self.itemslist.push(new Item("dummy text", self.courses[0], self.difficultyValues[0], new Date(), 100));
+				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
 			}
 
 			self.removeItem = function(itm){
