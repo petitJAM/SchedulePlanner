@@ -86,5 +86,16 @@ def getUserCourses(username):
     cur.close()
     return courses
 
+def getAllCourses():
+    cur = db.cursor()
+    cur.execute("SELECT c.Name,t.Name AS 'Teacher', c.CID FROM scheduleplanner.courses c, scheduleplanner.teachers t WHERE c.TID = t.TID")
+    results = cur.fetchall()
+    cur.nextset()
+    cur.close()
+    return results;
+
+
+
+
 def storeUserCourses():
     pass

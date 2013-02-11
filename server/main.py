@@ -67,9 +67,11 @@ def valid_email(email):
 class CoursesHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
-        courses = getUserCourses(username)
-        jsonCourses = json.dumps(courses,default =dthandler)
-        inserts ={'username': username, 'courses':jsonCourses}
+        usercourses = getUserCourses(username)
+        allcourses = getAllCourses()
+        jsonUserCourses = json.dumps(usercourses,default =dthandler)
+        jsonAllCourses = json.dumps(allcourses, default=dthandler)
+        inserts ={'username': username, 'usercourses':jsonUserCourses, 'allcourses':jsonAllCourses}
         self.renderFile("usercourses.html", **inserts)
 
     def post(self):

@@ -21,6 +21,10 @@ insert into `courses`  (`TID`, `Name`, `Start_time`, `End_time`, `Difficulty`)
 				values (2, 'Theory of Computation', TIME('11:4'), TIME('12:35'), 4);
 insert into `courses`  (`TID`, `Name`, `Start_time`, `End_time`, `Difficulty`)
 				values (3, 'Software Design', TIME('9:55'), TIME('10:45'), 3);
+insert into `courses`  (`TID`, `Name`, `Start_time`, `End_time`, `Difficulty`)
+				values (3, 'Algebra', TIME('10:50'), TIME('11:45'), 3);
+insert into `courses`  (`TID`, `Name`, `Start_time`, `End_time`, `Difficulty`)
+				values (3, 'Calculus 3', TIME('11:45'), TIME('12:45'), 3);
 
 # Vismay
 CALL adduser('Vismay', 'modivr@rose-hulman.edu', 'Vismay123');
