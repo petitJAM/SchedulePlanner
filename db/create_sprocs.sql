@@ -183,6 +183,7 @@ BEGIN
 	END IF;
 END$$
 
+
 # Add Teachers
 DROP PROCEDURE IF EXISTS addteacher$$
 CREATE PROCEDURE addteacher (name varchar(45), Department varchar(45))
@@ -190,6 +191,7 @@ BEGIN
 	insert into `teachers` (`Name`, `Department`)
 				 values (name, department);
 END$$
+
 
 # Get Schedule   user_items
 DROP PROCEDURE IF EXISTS getuseritems$$
@@ -221,6 +223,90 @@ BEGIN
 		WHERE `users`.`Name` = username;
 END$$
 
+
+DROP PROCEDURE IF EXISTS getuserexams$$
+CREATE PROCEDURE getuserexams (username varchar(20))
+BEGIN
+	SELECT 
+		e.`IID` AS `ExamID`,
+		`items`.`Complete_by` AS `Date`,
+		`items`.`Priority` AS `P`,
+		`items`.`Notes` AS `Notes`,
+		`items`.`Difficulty` AS `D`,
+		`courses`.`Name` AS `CourseName`,
+		`courses`.`CID` AS `CourseID`
+	FROM 
+		((((
+		`exams` e 
+		left join `items` on e.`IID` = `items`.`IID`)
+		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
+		left join `courses` on `items`.`CID` = `courses`.`CID`)
+		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
+		WHERE `users`.`Name` = username;
+END$$
+
+
+DROP PROCEDURE IF EXISTS getuserwork$$
+CREATE PROCEDURE getuserwork (username varchar(20))
+BEGIN
+	SELECT 
+		w.`IID` AS `WorkID`,
+		`items`.`Notes` AS `WorkName`,
+		w.`Start_time` AS `Start_time`,
+		`items`.`Complete_by` AS `End_time`,
+		`items`.`Priority` AS `P`,
+		`items`.`Difficulty` AS `D`
+	FROM 
+		(((
+		`works` w
+		left join `items` on w.`IID` = `items`.`IID`)
+		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
+		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
+		WHERE `users`.`Name` = username;
+END$$
+
+
+DROP PROCEDURE IF EXISTS getuserreminders$$
+CREATE PROCEDURE getuserreminders (username varchar(20))
+BEGIN
+	SELECT
+		r.`IID` AS `ReminderID`,
+		`items`.`Complete_by` AS `Complete_by`,
+		`items`.`Priority` AS `P`,
+		`items`.`Notes` AS `Notes`,
+		`items`.`Difficulty` AS `D`
+	FROM 
+		(((
+		`reminders` r 
+		left join `items` on a.`IID` = `items`.`IID`)
+		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
+		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
+		WHERE `users`.`Name` = username;
+END$$
+
+
+DROP PROCEDURE IF EXISTS getusermeetings$$
+CREATE PROCEDURE getusermeetings (username varchar(20))
+BEGIN
+	SELECT
+		m.`IID` AS `MeetingID`,
+		m.`Subject` AS `Subject`,
+		TIME(`items`.`Complete_by`) AS `Time`,
+		DATE(`items`.`Complete_by`) AS `Date`,
+		`items`.`Priority` AS `P`,
+		`items`.`Notes` AS `Notes`,
+		`items`.`Difficulty` AS `D`
+	FROM 
+		((((
+		`meetings` m 
+		left join `items` on a.`IID` = `items`.`IID`)
+		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
+		left join `courses` on `items`.`CID` = `courses`.`CID`)
+		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
+		WHERE `users`.`Name` = username;
+END$$
+
+
 DROP PROCEDURE IF EXISTS getusercourses$$
 CREATE PROCEDURE getusercourses (username varchar(20))
 BEGIN
@@ -232,6 +318,7 @@ BEGIN
 	FROM `coursesinschedules`, `courses`
 		WHERE `SID` = @SID;
 END$$
+
 
 delimiter $$
 USE `scheduleplanner`$$
