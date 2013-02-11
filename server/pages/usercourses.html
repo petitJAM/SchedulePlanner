@@ -33,16 +33,16 @@
 	<div class="container-fluid content">
 		<h1></h1>
 		<form method="post" data-bind="submit:submitMe">
-			<table data-bind="visible: itemslist().length>=0">
+			<table data-bind="visible: courseslist().length>=0">
 				<thead>
 					<tr>
-						<th><font size="5">Name</font></th>
 						<th><font size="5">Course</font></th>
-						<th><font size ="5">Assignment Diff.</font></th>
-						<th><font size ="5">Due Date</font></th>
+						<th><font size ="5">Course Diff.</font></th>
+						<th><font size ="5">Teacher</font></th>
+						<th><font size ="5">Teacher Diff.</font></th>
 					</tr>
 				</thead>
-				<tbody data-bind='foreach: itemslist'>
+				<tbody data-bind='foreach: courseslist'>
 					<tr>
 						<td><input style="height:30px;" class='required' type="text" data-bind='value:itemName' /></td>
 
