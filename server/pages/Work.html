@@ -45,17 +45,15 @@
                 <tbody data-bind='foreach: itemslist'>
                     <tr>
 
-                    <!--
                         <td><input style="height:30px;" class='required' type="text" data-bind='value:itemName' /></td>
 
-                        <td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'courseName' "></select></td>
+                        <td><input style="height:30px;" type="date" name="duedate"></td>
 
-                        <td><select data-bind="options: $root.difficultyValues, value: itemDiff, optionsText: 'diffName' "></select></td>
+                        <td><input style="height:30px;" type="date" name="duedate"></td>
 
                         <td><input style="height:30px;" type="date" name="duedate"></td>
 
                         <td><a href='#' data-bind='click: $root.removeItem'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
-                    -->
 
                     </tr>
                 </tbody>
@@ -108,32 +106,10 @@
             }
             return itmlist;
         }
-        // FIXME
-        function parseCourses(items){
-            cList =[];
-            for(var i=0; i<items.length; i++){
-                var inList =false;
-                for(var j=0; j<cList.length; j++){
-                    if(cList[j].courseID = items[i].CourseID){
-                        inList =true;
-                    }
-                }
-                if(inList){
-                    continue;
-                }else{
-                    cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID})
-                }
-
-            }
-            return cList;
-        }
 
         var itemsarray = parseWork(items);
-        var coursesarray = parseCourses(items);
-        console.log(coursesarray);
-        function ItemViewModel (itemsarray, coursesarray){
+        function ItemViewModel (itemsarray){
             var self = this;
-            self.courses = coursesarray;
 
             self.difficultyValues = [
             {diffName: "ChooseOne", diff: 0},
@@ -147,7 +123,7 @@
             self.itemslist = ko.observableArray(itemsarray);
 
             self.addItem = function() {
-                self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
+                self.itemslist.push(new Item("<i>Enter job</i>", new Date(), new Date(), new Date());
             }
 
             self.removeItem = function(itm){

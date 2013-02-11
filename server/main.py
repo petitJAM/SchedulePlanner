@@ -109,7 +109,7 @@ class ExamHandler(TemplateHandler):
         schedule = getUserWork(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
         inserts={'username': username, 'items':jsonschedule}
-        self.renderFile("assignments.html", **inserts)
+        self.renderFile("exams.html", **inserts)
 
 class WorkHandler(TemplateHandler):
     def get(self):
@@ -117,7 +117,7 @@ class WorkHandler(TemplateHandler):
         schedule = getUserWork(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
         inserts={'username': username, 'items':jsonschedule}
-        self.renderFile("assignments.html", **inserts)
+        self.renderFile("work.html", **inserts)
 
 class ReminderHandler(TemplateHandler):
     pass
@@ -128,7 +128,7 @@ class MeetingHandler(TemplateHandler):
         schedule = getUserAssignments(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
         inserts={'username': username, 'items':jsonschedule}
-        self.renderFile("assignments.html", **inserts)
+        self.renderFile("meeting.html", **inserts)
 
     def post(self):
         username = self.request.get('username')
@@ -144,7 +144,7 @@ class MeetingHandler(TemplateHandler):
         schedule = getUserAssignments(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
         inserts ={'username': username, 'items':jsonschedule}
-        self.renderFile("assignments.html", **inserts)
+        self.renderFile("meeting.html", **inserts)
 
 class SignupHandler(TemplateHandler):
     def get(self):
