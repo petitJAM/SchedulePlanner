@@ -79,4 +79,5 @@ def getUserCourses(username):
     return courses
 
 def storeUserCourses():
+    pass
             

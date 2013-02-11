@@ -67,12 +67,14 @@ def valid_email(email):
 class CoursesHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
-        inserts['username': username]
+        courses = getUserCourses(username)
+        jsonCourses = json.dumps(courses,default =dthandler)
+        inserts ={'username': username, 'courses':jsonCourses}
         self.renderFile("usercourses.html", **inserts)
 
     def post(self):
         username = self.request.get('username')
-        inserts['username': username]
+        inserts={'username': username}
         self.renderFile("usercourses.html", **inserts)        
 
 class AssignmentsHandler(TemplateHandler):
