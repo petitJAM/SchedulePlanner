@@ -121,6 +121,7 @@ CREATE TABLE `works` (
 CREATE TABLE `coursesinschedules` (
   `SID` int(11) NOT NULL,
   `CID` int(11) NOT NULL,
+  `Difficulty` TINYINT(4) NOT NULL,
   PRIMARY KEY (`SID`,`CID`),
   KEY `SID_fk_idx` (`SID`),
   KEY `CID_fk_idx` (`CID`),
