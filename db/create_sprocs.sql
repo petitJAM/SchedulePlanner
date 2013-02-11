@@ -37,9 +37,9 @@ END$$
 
 # Add Course to Schedule
 DROP PROCEDURE IF EXISTS addcoursetoschedule$$
-CREATE PROCEDURE addcoursetoschedule (schedID INT, courseID INT, difficutly TINYINT)
+CREATE PROCEDURE addcoursetoschedule (schedID INT, courseID INT)
 BEGIN
-	insert into `coursesinschedules` (`SID`, `CID`,`Difficulty`) values (schedID, courseID, difficulty);
+	insert into `coursesinschedules` (`SID`, `CID`) values (schedID, courseID);
 END$$
 
 
@@ -317,8 +317,7 @@ BEGIN
 		c.`CID` AS `CourseID`,
 		c.`Name` AS `CourseName`,
 		t.`TID` AS `TeacherID`,
-		t.`Name`AS `TeacherName`,
-		cis.`Difficulty` AS `Difficulty`
+		t.`Name`AS `TeacherName`
 
 	FROM 
 		`coursesinschedules` cis

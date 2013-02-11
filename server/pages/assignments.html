@@ -115,7 +115,6 @@
 		function parseCourses(courses){
 			cList = [];
 			courses.forEach(function(c, i) {
-				console.log("hello, parsing ", c, i);
 				cList.push({courseName: c.CourseName, courseID: c.CourseID, isSelected: false});
 			});
 			// cList =[];
@@ -141,6 +140,9 @@
 		function ItemViewModel (itemsarray, coursesarray){
 			var self = this;
 			self.courses = ko.observableArray(coursesarray);
+
+			console.log(itemsarray);
+			console.log(coursesarray);
 
 			self.difficultyValues = [
 			{diffName: "ChooseOne", diff: 0},
