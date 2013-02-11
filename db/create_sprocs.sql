@@ -314,13 +314,17 @@ BEGIN
 	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
 	SELECT
 		username AS `UserName`,
-		`courses`.`CID` AS `CourseID`,
-		`courses`.`Name` AS `CourseName`,
-		`teachers`.`TID` AS `TeacherID`,
-		`teachers`.`Name`AS `TeacherName`
+		c.`CID` AS `CourseID`,
+		c.`Name` AS `CourseName`,
+		t.`TID` AS `TeacherID`,
+		t.`Name`AS `TeacherName`
 
-	FROM `coursesinschedules`, `courses`,`teachers`
-		WHERE `SID` = @SID;
+	FROM 
+		`coursesinschedules` cis
+		left join `courses` c on cis.`CID` = c.`CID`
+		left join `teachers` t on c.`TID` = t.`TID`
+	WHERE cis.`SID` = @SID;
+	#GROUP BY `CourseName`;
 END$$
 
 
