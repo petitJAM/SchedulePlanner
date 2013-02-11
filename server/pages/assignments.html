@@ -37,7 +37,7 @@
 
 	<div class="container-fluid content">
 		<h1></h1>
-		<form method="post" data-bind="submit: ItemViewModel.submitMe">
+		<form method="post" data-bind="submit:submitMe">
 			<table data-bind="visible: itemslist().length>=0">
 				<thead>
 					<tr>
@@ -64,7 +64,7 @@
 				</tbody>
 			</table>
 			<a href='#' data-bind='click: $root.addItem'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
-			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: hidden;"></textarea>
+			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
 			<input class="btn" type="submit"></input>
 
 		</form>
