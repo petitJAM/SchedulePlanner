@@ -31,7 +31,7 @@
 
 	<div class="container-fluid content">
 		<h1>{{username}}</h1>
-		<form>
+		<form = "post">
 			<table data-bind="visible: courseslist().length>=0">
 				<thead>
 					<tr>
@@ -53,11 +53,9 @@
 				</tbody>
 			</table>
 			<a href='#' data-bind='click: $root.addCourse'><button type="button" class="btn btn-info" data-toggle="button">Add Course</button></a>
-			<form method="post">
-				<textarea data-bind="text:ko.toJSON($root, null, 2)" style="visibility: ;"></textarea>
+				<textarea name="username" style="visibility: hidden;">{{username}}</textarea>
+				<textarea data-bind="text:ko.toJSON($root, null, 2)" style="visibility:hidden;"></textarea>
 				<input class="btn" type="submit"></input>
-			</form>
-
 		</form>
 		
 	</div>
@@ -147,10 +145,6 @@
 
 			self.removeCourse = function(itm){
 				self.courseslist.remove(itm);
-			}
-
-			self.submitMe= function(){
-				return ko.toJSON($root, null,2);
 			}
 
 
