@@ -100,7 +100,12 @@ class AssignmentsHandler(TemplateHandler):
         self.renderFile("assignments.html", **inserts)
 
 class ExamHandler(TemplateHandler):
-    pass
+    def get(self):
+        username = self.request.get('username')
+        schedule = getUserWork(username)
+        jsonschedule = json.dumps(schedule, default=dthandler)
+        inserts={'username': username, 'items':jsonschedule}
+        self.renderFile("assignments.html", **inserts)
 
 class WorkHandler(TemplateHandler):
     def get(self):

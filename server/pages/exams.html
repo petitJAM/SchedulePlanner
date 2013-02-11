@@ -1,0 +1,172 @@
+
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Ideer</title>
+	<!-- styles stuff -->
+	<link type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.css" media="screen">
+	<!-- knockout stuff -->
+	<script type="text/javascript" src="/assets/components/knockout-2.2.0.debug.js"></script>
+	<script type='text/javascript' src="http://knockoutjs.com/examples/resources/knockout.simpleGrid.1.3.js"></script>
+	<!-- jquery stuff -->
+	<link href="/assets/components/jquery-ui-1.9.1.custom/css/start/jquery-ui-1.9.1.custom.css" rel="stylesheet">
+	<script src="/assets/components/jquery-ui-1.9.1.custom/js/jquery-1.8.2.js"></script>
+	<script src="/assets/components/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.js"></script>
+
+
+
+
+</head>
+
+
+<body style="padding-top: 60px;">
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container" style="margin-left:20px;">
+				<a class="brand" href="/">Schedule Planner</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li><a href="/">Home</a></li>
+						<li><a href="/users">Users</a></li>
+						<li><a href="#">Contact</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid content">
+		<h1></h1>
+		<form method="post" data-bind="submit:submitMe">
+			<table data-bind="visible: itemslist().length>=0">
+				<thead>
+					<tr>
+						<th><font size="5">Course</font></th>
+						<th><font size ="5">Date</font></th>
+					</tr>
+				</thead>
+				<tbody data-bind='foreach: itemslist'>
+					<tr>
+						<td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'courseName' "></select></td>
+
+						<td><input style="height:30px;" type="date" name="duedate"></td>
+
+						<td><a href='#' data-bind='click: $root.removeItem'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
+
+
+					</tr>
+				</tbody>
+			</table>
+			<a href='#' data-bind='click: $root.addItem'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
+			<input class="btn" type="submit"></input>
+
+		</form>
+	</div>
+	
+	<div class="pagination">
+		<ul>
+			<li><a href="/login/scheduler/assignments?username={{username}}">Assignments</a></li>
+			<li><a href="/login/scheduler/exams?username={{username}}">Exams</a></li>
+			<li><a href="/login/scheduler/work?username={{username}}">Work</a></li>
+			<li><a href="/login/scheduler/reminders?username={{username}}">Reminders</a></li>
+			<li><a href="/login/scheduler/meetings?username={{username}}">Meetings</a></li>
+		</ul>
+	</div>
+
+	<br><br><br><br>
+	
+
+
+	<!--  -->
+	<script type="text/javascript">
+	$(function(){
+		function getData() {
+			istr = '{{items}}'.replace(/&#34;/g, '"');
+			items = JSON.parse(istr);
+			return items
+		};
+		var items = getData();
+
+		console.log(items);
+
+		function Item(course, date){
+			var self = this;
+
+			self.itemCourse = ko.observable(course);
+			self.itemDate = ko.observable(date);
+			//self.itemPriority = ko.computed();
+		}
+		function parseExams(items){
+			itmlist =[];
+			for(var i=0; i<items.length; i++){
+				itmlist.push(new Item(items[i].CourseName, items[i].Date));
+			}
+			return itmlist;
+		}
+		function parseCourses(items){
+			cList =[];
+			for(var i=0; i<items.length; i++){
+				var inList =false;
+				for(var j=0; j<cList.length; j++){
+					if(cList[j].courseID = items[i].CourseID){
+						inList =true;
+					}
+				}
+				if(inList){
+					continue;
+				}else{
+					cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID})
+				}
+
+			}
+			return cList;
+		}
+
+		var itemsarray = parseAssignments(items);
+		var coursesarray = parseCourses(items);
+		console.log(coursesarray);
+		function ItemViewModel (itemsarray, coursesarray){
+			var self =this;
+			self.courses = coursesarray;
+
+			self.difficultyValues = [
+			{diffName: "ChooseOne", diff: 0},
+			{diffName: "snore..zzz", diff: 1},
+			{diffName: "easy stuff", diff: 2},
+			{diffName: "yipes! focus now!", diff: 3},
+			{diffName: "Gonna be up late :(", diff: 4},
+			{diffName: "OH S**T FML!", diff: 5}
+			];
+
+			self.itemslist = ko.observableArray(itemsarray);
+
+			self.addItem = function() {
+				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
+			}
+
+			self.removeItem = function(itm){
+				self.itemslist.remove(itm)
+			}
+
+			self.submitMe = function() {
+				// gather myself for posting
+				return ko.toJSON($root, null, 2);
+			}
+		}
+		ko.applyBindings(new ItemViewModel(itemsarray, coursesarray));
+	//formatting
+
+	
+	
+})	
+
+
+
+
+
+</script>
+
+<script src="/assets/bootstrap/js/bootstrap.js"></script>
+</body>
+
+</html>
