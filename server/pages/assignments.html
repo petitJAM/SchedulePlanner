@@ -75,19 +75,32 @@
 		</ul>
 	</div>
 
+	<p id='testy'></p>
+	<script>
+		cstr = '{{courses}}'.replace(/&#34;/g, '"');
+		courses = JSON.parse(cstr);
+		console.log(courses[0]);
+	</script>
+
 	<br><br><br><br>
 
 	<!--  -->
 	<script type="text/javascript">
 	$(function(){
-		function getData() {
+		function getItems() {
 			istr = '{{items}}'.replace(/&#34;/g, '"');
-			items = JSON.parse(istr);
-			return items
+			return JSON.parse(istr);
 		};
-		var items = getData();
 
-		console.log(items);
+		function getCourses() {
+			cstr = '{{courses}}'.replace(/&#34;/g, '"');
+			return JSON.parse(cstr);
+		}
+
+		var items = getItems(), courses = getCourses();
+
+		// console.log(items);
+		// console.log(courses);
 
 		function Item(name, course, diff, duedate, id){
 			var self = this;
@@ -106,31 +119,34 @@
 			}
 			return itmlist;
 		}
-		function parseCourses(items){
-			cList =[];
-			for(var i=0; i<items.length; i++){
-				var inList =false;
-				for(var j=0; j<cList.length; j++){
-					if(cList[j].courseID = items[i].CourseID){
-						inList =true;
-					}
-				}
-				if(inList){
-					continue;
-				}else{
-					cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID})
-				}
+		function parseCourses(courses){
+			cList = [];
+			courses.forEach(function(c, i) {
+				cList.push({courseName: c.CourseName, courseID: c.CourseID, isSelected: false});
+			});
+			// cList =[];
+			// for(var i=0; i<items.length; i++){
+			// 	var inList =false;
+			// 	for(var j=0; j<cList.length; j++){
+			// 		if(cList[j].courseID = items[i].CourseID){
+			// 			inList =true;
+			// 		}
+			// 	}
+			// 	if(inList){
+			// 		continue;
+			// 	}else{
+			// 		cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID, isSelected: false});
+			// 	}
 
-			}
+			// }
 			return cList;
 		}
 
 		var itemsarray = parseAssignments(items);
-		var coursesarray = parseCourses(items);
-		console.log(coursesarray);
+		var coursesarray = parseCourses(courses);
 		function ItemViewModel (itemsarray, coursesarray){
 			var self = this;
-			self.courses = coursesarray;
+			self.courses = ko.observableArray(coursesarray);
 
 			self.difficultyValues = [
 			{diffName: "ChooseOne", diff: 0},
@@ -144,7 +160,7 @@
 			self.itemslist = ko.observableArray(itemsarray);
 
 			self.addItem = function() {
-				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
+				self.itemslist.push(new Item("dummy text", self.courses[0], self.difficultyValues[0], new Date(), 100));
 			}
 
 			self.removeItem = function(itm){

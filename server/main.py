@@ -81,24 +81,24 @@ class AssignmentsHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
         schedule = getUserAssignments(username)
+        courses = getUserCourses(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
-        inserts={'username': username, 'items':jsonschedule}
+        jsoncourses = json.dumps(courses, default=dthandler)
+        inserts={'username': username, 'items':jsonschedule, 'courses':jsoncourses}
         self.renderFile("assignments.html", **inserts)
 
     def post(self):
         username = self.request.get('username')
         data = json.loads(data)
         for i in range(0, len(data['itemslist'])):
-          storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'],
-           data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'],
-            data['itemslist'][i]['itemDate'])
-
+            storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'], data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+            
         # update
         print self.request.get('courses')
 
         schedule = getUserAssignments(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
-        inserts ={'username': username, 'items':jsonschedule}
+        inserts = {'username': username, 'items':jsonschedule}
         self.renderFile("assignments.html", **inserts)
 
 class ExamHandler(TemplateHandler):
