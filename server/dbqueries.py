@@ -95,6 +95,13 @@ def getAllCourses():
     return results;
 
 
+def getUserActiveScheduleID(username):
+    cur = db.cursor()
+    cur.execute("SELECT Active_SID FROM users WHERE name = %s", username)
+    result = cur.fetchone()
+    cur.nextset()
+    cur.close()
+    return results
 
 
 def storeUserCourses():

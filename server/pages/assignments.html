@@ -79,7 +79,7 @@
 
 	<!--  -->
 	<script type="text/javascript">
-	$(function(){
+	$(function($){
 		function getItems() {
 			istr = '{{items}}'.replace(/&#34;/g, '"');
 			return JSON.parse(istr);
@@ -166,7 +166,7 @@
 
 			self.submitMe = function() {
 				// gather myself for posting
-				return ko.toJSON($root, null, 2);
+				return ko.toJSON(root, null, 2);
 			}
 		}
 		ko.applyBindings(new ItemViewModel(itemsarray, coursesarray));

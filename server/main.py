@@ -76,8 +76,15 @@ class CoursesHandler(TemplateHandler):
 
     def post(self):
         username = self.request.get('username')
+        #data = json.loads(data)
+        sid = getUserActiveScheduleID(username)
+        #print(sid)
+        #for i in range(0, len(data['courseslist'])):
+         #   storeUserCourses(username,)
         inserts={'username': username}
-        self.renderFile("usercourses.html", **inserts)        
+        print(username)
+        self.renderFile("usercourses.html", **inserts) 
+        #self.redirect('/login/scheduler/courses?username='+"Vismay")      
 
 class AssignmentsHandler(TemplateHandler):
     def get(self):
