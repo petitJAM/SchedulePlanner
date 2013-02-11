@@ -31,21 +31,20 @@ SELECT CID into @dbcid FROM courses where Name='Databases';
 SELECT CID into @tccid FROM courses where Name='Theory of Computation';
 SELECT CID into @sdcid FROM courses where Name='Software Design';
 
+
 CALL addschedule(@vis, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 77 DAY));
 CALL addassignment('homework 1', @vis, @dbcid, DATE_ADD(NOW(), INTERVAL 3 DAY), 4, "", 2);
 
 SELECT Active_SID into @asid FROM users where name='Vismay';
-CALL addcoursetoschedule(@asid, @dbcid);
-CALL addcoursetoschedule(@asid, @tccid);
-CALL addcoursetoschedule(@asid, @sdcid);
+CALL addcoursetoschedule(@asid, @dbcid,3);
+CALL addcoursetoschedule(@asid, @tccid,4);
+CALL addcoursetoschedule(@asid, @sdcid,2);
 
 
 # Alex
 CALL adduser('Alex', 'petitjam@rose-hulman.edu', '123456');
 
 SELECT UID into @alex FROM users where name='Alex';
-SELECT CID into @dbcid FROM courses where Name='Databases';
-SELECT CID into @tccid FROM courses where Name='Theory of Computation';
 
 CALL addschedule(@alex, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 77 DAY));
 CALL addassignment('homework 3', @alex, @dbcid, DATE_ADD(NOW(), INTERVAL 3 DAY), 4, "", 2);
@@ -53,9 +52,9 @@ CALL addassignment('homework 8', @alex, @tccid, DATE_ADD(NOW(), INTERVAL 7 DAY),
 CALL addmeeting('Create sprocs', @alex, @dbcid, DATE_ADD(NOW(), INTERVAL 1 DAY), 5, "Makin' sprocs", 2);
 
 SELECT Active_SID into @asid FROM users where name='Alex';
-CALL addcoursetoschedule(@asid, @dbcid);
-CALL addcoursetoschedule(@asid, @tccid);
-CALL addcoursetoschedule(@asid, @sdcid);
+CALL addcoursetoschedule(@asid, @dbcid,3);
+CALL addcoursetoschedule(@asid, @tccid,4);
+CALL addcoursetoschedule(@asid, @sdcid,2);
 
 /*
 insert into user (Name, Email, Password, Active_SID)
