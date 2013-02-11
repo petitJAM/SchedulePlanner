@@ -25,6 +25,14 @@ def verifyUserExists(username, password):
     cur = db.cursor()
     return checker
 
+def getUserCourses(username):
+    cur = db.cursor()
+    cur.callproc('getusercourses', (username,))
+    courses = cur.fetchall()
+    cur.nextset()
+    cur.close()
+    return courses
+
 def getUserAssignments(username):
     cur = db.cursor()
     cur.callproc('getuserassignments', (username,))

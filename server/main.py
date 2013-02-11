@@ -68,8 +68,10 @@ class AssignmentsHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
         schedule = getUserAssignments(username)
+        courses = getUserCourses(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
-        inserts={'username': username, 'items':jsonschedule}
+        jsoncourses = json.dumps(courses, default=dthandler)
+        inserts={'username': username, 'items':jsonschedule, 'courses':jsoncourses}
         self.renderFile("assignments.html", **inserts)
 
     def post(self):

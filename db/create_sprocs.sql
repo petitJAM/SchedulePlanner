@@ -254,6 +254,7 @@ BEGIN
 		`items`.`Notes` AS `WorkName`,
 		w.`Start_time` AS `Start_time`,
 		`items`.`Complete_by` AS `End_time`,
+		DATE(`items`.`Complete_by`) AS `Date`,
 		`items`.`Priority` AS `P`,
 		`items`.`Difficulty` AS `D`
 	FROM 
