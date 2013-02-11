@@ -64,13 +64,13 @@ def valid_password(password):
 def valid_email(email):
     return email and EMAIL_RE.match(email)
 
-class ScheduleHandler(TemplateHandler):
+class AssignmentsHandler(TemplateHandler):
   def get(self):
     username = self.request.get('username')
     schedule = getUserAssignments(username)
     jsonschedule = json.dumps(schedule, default=dthandler)
     inserts={'username': username, 'items':jsonschedule}
-    self.renderFile("project.html", **inserts)
+    self.renderFile("assignments.html", **inserts)
 
   def post(self):
     username = self.request.get('username')
@@ -86,7 +86,19 @@ class ScheduleHandler(TemplateHandler):
     schedule = getUserAssignments(username)
     jsonschedule = json.dumps(schedule, default=dthandler)
     inserts ={'username': username, 'items':jsonschedule}
-    self.renderFile("project.html", **inserts)
+    self.renderFile("assignments.html", **inserts)
+
+class ExamHandler(TemplateHandler):
+    pass
+
+class WorkHandler(TemplateHandler):
+    pass
+
+class ReminderHandler(TemplateHandler):
+    pass
+
+class MeetingHandler(TemplateHandler):
+    pass
 
 class SignupHandler(TemplateHandler):
     def get(self):
@@ -180,7 +192,7 @@ class WelcomeHandler(TemplateHandler):
     def post(self):
         username = self.request.get('username')
         username = str(username)
-        self.redirect('scheduler?username='+username)
+        self.redirect('scheduler/assignments?username='+username)
 
 class MainHandler(TemplateHandler):
     def get(self):
@@ -191,10 +203,14 @@ class ContactHandler(TemplateHandler):
         self.renderFile("contact.html")
 
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
-                                ('/login',LoginHandler),
+                                ('/login', LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
-                                ('/login/scheduler',ScheduleHandler),
-                                ('/',MainHandler),
-                                ('/contact',ContactHandler)], 
+                                ('/login/scheduler/assignments', AssignmentsHandler),
+                                ('/login/scheduler/exams', ExamHandler),
+                                ('/login/scheduler/work', WorkHandler),
+                                ('/login/scheduler/reminder', ReminderHandler),
+                                ('/login/scheduler/meeting', MeetingHandler),
+                                ('/', MainHandler),
+                                ('/contact', ContactHandler)], 
                                 debug=True)
 
