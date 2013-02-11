@@ -115,6 +115,7 @@
 		function parseCourses(courses){
 			cList = [];
 			courses.forEach(function(c, i) {
+				console.log("hello, parsing ", c, i);
 				cList.push({courseName: c.CourseName, courseID: c.CourseID, isSelected: false});
 			});
 			// cList =[];
