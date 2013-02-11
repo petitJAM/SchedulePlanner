@@ -33,6 +33,38 @@ def getUserAssignments(username):
     cur.close()
     return items
 
+def getUserExams(username):
+    cur = db.cursor()
+    cur.callproc('getuserexams', (username,))
+    items = cur.fetchall()
+    cur.nextset()
+    cur.close()
+    return items
+
+def getUserWork(username):
+    cur = db.cursor()
+    cur.callproc('getuserwork', (username,))
+    items = cur.fetchall()
+    cur.nextset()
+    cur.close()
+    return items
+
+def getUserReminders(username):
+    cur = db.cursor()
+    cur.callproc('getuserreminders', (username,))
+    items = cur.fetchall()
+    cur.nextset()
+    cur.close()
+    return items
+
+def getUserMeetings(username):
+    cur = db.cursor()
+    cur.callproc('getusermeetings', (username,))
+    items = cur.fetchall()
+    cur.nextset()
+    cur.close()
+    return items
+
 def storeUserAssignments(username, aID, aName, aCID, aDiff, aDate):
     cur = db.cursor()
     cur.callproc('storeuserassignments',(username, aID, aName, aCID, aDiff, aDate))
