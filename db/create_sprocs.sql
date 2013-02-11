@@ -217,7 +217,7 @@ BEGIN
 		((((
 		`assignments` a 
 		left join `items` on a.`IID` = `items`.`IID`)
-		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
+		left join `schedules` on `items`.`SID` = `schedules`.`SID`)
 		left join `courses` on `items`.`CID` = `courses`.`CID`)
 		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
 		WHERE `users`.`Name` = username;
