@@ -79,7 +79,7 @@ class CoursesHandler(TemplateHandler):
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
         sid =getUserActiveScheduleID(username)
-
+        removeAllCourses(sid['Active_SID'],data['courseslist'][0]['cName']['CID'])
         for i in range(0, len(data['courseslist'])):
              storeUserCourses(sid['Active_SID'],
                 data['courseslist'][i]['cName']['CID'],
@@ -88,7 +88,7 @@ class CoursesHandler(TemplateHandler):
         allcourses = getAllCourses()
         jsonUserCourses = json.dumps(usercourses,default =dthandler)
         jsonAllCourses = json.dumps(allcourses, default=dthandler)
-        inserts ={'username': username, 'usercourses':jsonUserCourses, 'allcourses':jsonAllCourses, 'data': sid["Active_SID"]}
+        inserts ={'username': username, 'usercourses':jsonUserCourses, 'allcourses':jsonAllCourses, 'data': jsonUserCourses}
         self.renderFile("usercourses.html", **inserts)    
 
 class AssignmentsHandler(TemplateHandler):

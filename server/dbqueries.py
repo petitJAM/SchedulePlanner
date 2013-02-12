@@ -108,3 +108,9 @@ def storeUserCourses(sid, cid, diff):
     cur = db.cursor()
     cur.callproc('addcoursetoschedule', (sid,cid,diff))
     cur.close()
+
+def removeAllCourses(sid,cid):
+    cur=db.cursor()
+    cur.callproc('removeallcoursesfromuserschedule', (sid, cid))
+    cur.nextset()
+    cur.close()
