@@ -30,8 +30,8 @@
 	</div>
 
 	<div class="container-fluid content">
-		<h1>{{username}}</h1>
-		<form>
+
+		<form method= "post">
 			<table data-bind="visible: courseslist().length>=0">
 				<thead>
 					<tr>
@@ -52,12 +52,10 @@
 					</tr>
 				</tbody>
 			</table>
-			<a href='#' data-bind='click: $root.addCourse'><button type="button" class="btn btn-info">Add Course</button></a>
-			<form method="post">
-				<textarea data-bind="text:ko.toJSON($root, null, 2)" style="visibility: ;"></textarea>
-				<input class="btn" type="submit"></input>
-			</form>
-
+			<a href='#' data-bind='click: $root.addCourse'><button type="button" class="btn btn-info" data-toggle="button">Add Course</button></a>
+				<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
+				<textarea name ="tester" style="visibility: ;">{{data}}</textarea>
+			<input class="btn" type="submit">
 		</form>
 		
 	</div>
@@ -82,12 +80,12 @@
 			istr = '{{usercourses}}'.replace(/&#34;/g, '"');
 			items = JSON.parse(istr);
 			return items
-		};
+		}
 		function getAllCourses() {
 			istr = '{{allcourses}}'.replace(/&#34;/g, '"');
 			items = JSON.parse(istr);
 			return items
-		};
+		}
 		var usercourses = getUserCourses();
 		var allcourses = getAllCourses();
 		//console.log(usercourses);
@@ -147,10 +145,6 @@
 
 			self.removeCourse = function(itm){
 				self.courseslist.remove(itm);
-			}
-
-			self.submitMe= function(){
-				return ko.toJSON($root, null,2);
 			}
 
 

@@ -101,8 +101,10 @@ def getUserActiveScheduleID(username):
     result = cur.fetchone()
     cur.nextset()
     cur.close()
-    return results
+    return result
 
 
-def storeUserCourses():
-    pass
+def storeUserCourses(sid, cid, diff):
+    cur = db.cursor()
+    cur.callproc('addcoursetoschedule', (sid,cid,diff))
+    cur.close()
