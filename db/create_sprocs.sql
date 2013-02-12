@@ -279,7 +279,7 @@ BEGIN
 	FROM 
 		(((
 		`reminders` r 
-		left join `items` on a.`IID` = `items`.`IID`)
+		left join `items` on r.`IID` = `items`.`IID`)
 		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
 		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
 		WHERE `users`.`Name` = username;

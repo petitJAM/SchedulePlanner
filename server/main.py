@@ -135,7 +135,15 @@ class WorkHandler(TemplateHandler):
         self.renderFile("work.html", **inserts)
 
 class ReminderHandler(TemplateHandler):
-    pass
+    def get(self):
+        username = self.request.get('username')
+        reminder = getUserReminders(username)
+        jsonreminder = json.dumps(reminder, default=dthandler)
+        inserts={'username': username, 'items':jsonreminder}
+        self.renderFile("reminders.html", **inserts)
+
+
+
 
 class MeetingHandler(TemplateHandler):
     def get(self):
@@ -269,7 +277,7 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login/scheduler/assignments', AssignmentsHandler),
                                 ('/login/scheduler/exams', ExamHandler),
                                 ('/login/scheduler/work', WorkHandler),
-                                ('/login/scheduler/reminder', ReminderHandler),
+                                ('/login/scheduler/reminders', ReminderHandler),
                                 ('/login/scheduler/meeting', MeetingHandler),
                                 ('/login/courses', CoursesHandler),
                                 ('/', MainHandler),
