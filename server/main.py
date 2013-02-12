@@ -258,6 +258,10 @@ class ContactHandler(TemplateHandler):
     def get(self):
         self.renderFile("contact.html")
 
+class PrioritytHandler(TemplateHandler):
+    def get(self):
+        self.renderFile("priority.html")
+
 app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login', LoginHandler),
                                 ('/login/welcome', WelcomeHandler),
@@ -268,6 +272,7 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login/scheduler/meetings', MeetingHandler),
                                 ('/login/courses', CoursesHandler),
                                 ('/', MainHandler),
-                                ('/contact', ContactHandler)], 
+                                ('/contact', ContactHandler),
+                                ('/priority', PrioritytHandler)], 
                                 debug=True)
 
