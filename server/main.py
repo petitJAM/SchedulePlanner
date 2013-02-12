@@ -142,7 +142,9 @@ class MeetingHandler(TemplateHandler):
         username = self.request.get('username')
         meetings =  getUserMeetings(username)
         jsonmeetings = json.dumps(meetings, default=dthandler)
-        inserts = {'username': username, 'items':jsonmeetings}
+        usercourses = getUserCourses(username)
+        jsonUserCourses = json.dumps(usercourses,default =dthandler)
+        inserts = {'username': username, 'items':jsonmeetings, 'usercourses': jsonUserCourses}
         self.renderFile("meetings.html", **inserts)
 
 
