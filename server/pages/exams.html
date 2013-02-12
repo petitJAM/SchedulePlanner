@@ -57,7 +57,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<a href='#' data-bind='click: $root.addItem'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
+			<a href='#' data-bind='click: $root.addExams'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
 			<input class="btn" type="submit"></input>
 
 		</form>
@@ -96,14 +96,14 @@
 			self.itemDate = ko.observable(date);
 			//self.itemPriority = ko.computed();
 		}
-		function parseExams(items){
+		function parseExams(exams){
 			itmlist =[];
 			for(var i=0; i<items.length; i++){
 				itmlist.push(new Item(items[i].CourseName, items[i].Date));
 			}
 			return itmlist;
 		}
-		function parseCourses(items){
+		function parseCourses(exams){
 			cList =[];
 			for(var i=0; i<items.length; i++){
 				var inList =false;
@@ -140,7 +140,7 @@
 
 			self.itemslist = ko.observableArray(itemsarray);
 
-			self.addItem = function() {
+			self.addExams = function() {
 				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
 			}
 
