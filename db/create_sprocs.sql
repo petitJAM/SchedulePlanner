@@ -335,8 +335,55 @@ BEGIN
 END$$
 
 
-delimiter $$
-USE `scheduleplanner`$$
+DROP PROCEDURE IF EXISTS storeuserassignments$$
+CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11), aname varchar(45), 
+	acid varchar(45), aprio tinyint(4), adiff tinyint(4), aduedate varchar(25))
+BEGIN
+	
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
+
+	SET @alreadythere = (EXISTS (SELECT * FROM `assignments` WHERE `IID` = aid));
+	#SELECT @alreadythere;
+	
+	IF @alreadythere THEN
+		SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
+				INTO @duedate, @course, @diff, @cid
+			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid GROUP BY `items`.`IID`;
+
+		UPDATE `assignments` SET `Name` = aname WHERE `IID` = aid;
+		commit;
+
+		IF (adiff != @diff)THEN
+			UPDATE `items` SET `Difficulty` = adiff WHERE `SID` = @SID AND `IID` = aid;
+			commit;
+		END IF;
+
+		IF (aduedate != @duedate) THEN
+			UPDATE `items` SET `Complete_by` = DATE(aduedate) WHERE `SID` = @SID AND `IID` = aid;
+			commit;
+		END IF;
+
+		IF (acid != @cid) THEN
+			UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
+			commit;
+		END IF;
+		#SELECT "update";
+	ELSE
+		insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Difficulty`)
+					 values (@SID, acid, DATE(aduedate), aprio, adiff);
+		commit;
+		
+		select LAST_INSERT_ID() INTO @liid;
+		insert into `assignments` (`IID`, `Name`)
+						values (@liid, aname);
+		commit;
+		#SELECT "insert";
+	END IF;
+END$$
+
+
+/*
 DROP PROCEDURE IF EXISTS storeuserassignments$$
 CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11),
  aname varchar(45), acid varchar(45), adiff tinyint(4), aduedate varchar(25))

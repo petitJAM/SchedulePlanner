@@ -25,22 +25,15 @@
   <div class="container content">
    <div style="width:800px; margin:0 auto;">
     <div class="row">
-      <h2>Get In Touch</h2>
+      <h2>Here is your Priority</h2>
+      <ul data-bind="foreach:{data:prioritizedList, as: 'ptd'}">
+        <li>
+          <span class="label label-important" data-bind="text: $data"></span>
+        </li>
+      </ul>
     </div>
 
-    <ul class="nav nav-tabs">
-    <li class="active">
-    <a >Contact</a>
-    </li>
-</ul>
-<div class="row-fluid">
-   <div class="span4">
-    <a href="mailto:petitjam@rose-hulman.edu"><img src="http://lorempixel.com/200/200/?1" /><br />Alex</a></div>
-     <div class="span4">
-     <a href="mailto:modivr@rose-hulman.edu"><img src="http://lorempixel.com/200/200/?2" /><br />Vismay</a></div>
-    <div class="span4">
-     <a href="mailto:huangf@rose-hulman.edu"><img src="http://lorempixel.com/200/200/?3" /><br />Fang</a></div>
-</div>
+    
   <script src="../assets/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
