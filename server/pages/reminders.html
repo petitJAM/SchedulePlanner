@@ -38,7 +38,7 @@
 	<div class="container-fluid content">
 		<h1></h1>
 		<form method="post">
-			<table data-bind="visible: itemslist().length>=0">
+			<table data-bind="visible: reminderslist().length>=0">
 				<thead>
 					<tr>
 						<th><font size="5">Name</font></th>
@@ -48,22 +48,24 @@
                     </tr>
 					</tr>
 				</thead>
-				<tbody data-bind='foreach: itemslist'>
+				<tbody data-bind='foreach: reminderslist'>
 					<tr>
-						<td><input style="height:30px;" class='required' type="text" data-bind='value:itemName' /></td>
+						<td><input style="height:30px;" class='required' type="text" data-bind='value:rname' /></td>
 
-						<td><input style="height:30px;" type="date" name="duedate"></td>
+						<td><input style="height:30px;" type="date" data-bind="value: rdate"></td>
 
-						<td><input style="height:30px;" type="date" name="duedate2" data-bind="value: itemStartTime"></td>
+						<td><input style="height:30px;" type="text" data-bind="value: rstart_time"></td>
 
-                        <td><input style="height:30px;" type="date" name="duedate3" data-bind="value: itemEndTime"></td>
+                        <td><input style="height:30px;" type="text" data-bind="value: rend_time"></td>
+
+                        <td><a href='#' data-bind='click: $root.removeReminder'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
 
 
 					</tr>
 				</tbody>
 			</table>
 
-			<a href='#' data-bind='click: $root.addExam'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
+		<a href='#' data-bind='click: $root.addReminder'><button type="button" class="btn btn-info" data-toggle="button">Add Course</button></a>
 			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
 			<input class="btn" type="submit"></input>
 
@@ -92,22 +94,6 @@
 			items = JSON.parse(istr);
 			return items
 		}
-		var Reminder = getData();
-		function Reminder(name, date, start_time, end_time){
-			var self=this;
-			self.name=ko.observable(name);
-			self.date=ko.observable(date);
-			self.start_time=ko.observable(start_time);
-			self.end_time=ko.observable(end_time);
-
-		}
-		Reminder_array=[];
-		function ReminderViewModel(Reminder_array){
-			var self=this;
-			self.Reminder=ko.observableArray(Reminder_array);
-
-		}
-
 		function parseReminder(Reminder){
 			itmlist =[];
 			for(var i=0; i<items.length; i++){
@@ -115,8 +101,32 @@
 			}
 			return itmlist;
 		}
+		var reminders = getData();
+		function Reminder(name, date, start_time, end_time){
+			var self=this;
+			self.rname=ko.observable(name);
+			self.rdate=ko.observable(date);
+			self.rstart_time=ko.observable(start_time);
+			self.rend_time=ko.observable(end_time);
 
-		
+		}
+		Reminder_array=[];
+		function ReminderViewModel(Reminder_array){
+			var self=this;
+			self.reminderslist=ko.observableArray(Reminder_array);
+
+			self.addReminder = function(){
+				self.reminderslist.push(
+					new Reminder("new reminder", new Date(), "23:00", "00:00")
+					);
+			}
+
+			self.removeReminder = function(itm){
+				self.reminderslist.remove(itm);
+
+			}
+
+		}		
 		ko.applyBindings(new ReminderViewModel(Reminder_array));
 	
 })	
