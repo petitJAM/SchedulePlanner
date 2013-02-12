@@ -76,15 +76,20 @@ class CoursesHandler(TemplateHandler):
 
     def post(self):
         username = self.request.get('username')
+        data = self.request.get('bunchesofdata')
         data = json.loads(data)
-        sid = getUserActiveScheduleID(username)
-        print(data)
-        forkerton()
+        sid =getUserActiveScheduleID(username)
+ 
         for i in range(0, len(data['courseslist'])):
-            storeUserCourses(username,)
-        inserts={'username': username}
-        self.renderFile("usercourses.html", **inserts) 
-        #self.redirect('/login/scheduler/courses?username='+"Vismay")      
+             storeUserCourses(sid['Active_SID'],
+                data['courseslist'][i]['cName']['CID'],
+                 data['courseslist'][i]['diff']['diff'])
+        usercourses = getUserCourses(username)
+        allcourses = getAllCourses()
+        jsonUserCourses = json.dumps(usercourses,default =dthandler)
+        jsonAllCourses = json.dumps(allcourses, default=dthandler)
+        inserts ={'username': username, 'usercourses':jsonUserCourses, 'allcourses':jsonAllCourses, 'data': sid["Active_SID"]}
+        self.renderFile("usercourses.html", **inserts)    
 
 class AssignmentsHandler(TemplateHandler):
     def get(self):
@@ -114,7 +119,7 @@ class AssignmentsHandler(TemplateHandler):
 class ExamHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
-        schedule = getUserWork(username)
+        schedule = getUserExams(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
         inserts={'username': username, 'items':jsonschedule}
         self.renderFile("exams.html", **inserts)
