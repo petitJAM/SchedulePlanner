@@ -98,7 +98,7 @@ class AssignmentsHandler(TemplateHandler):
 
     def post(self):
         username = self.request.get('username')
-        data = json.loads(data)
+        data = json.loads(self.request.get('data'))
         for i in range(0, len(data['itemslist'])):
             storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'], data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
             

@@ -50,6 +50,7 @@ CREATE PROCEDURE additem (schedID INT, courseID INT, completeby varchar(20),
 BEGIN
 	insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Notes`, `Difficulty`)
 				 values (schedID, courseID, completeby, priority, notes, diff);
+	#commit;
 END$$
 
 
@@ -63,6 +64,7 @@ BEGIN
 
 	SELECT LAST_INSERT_ID() INTO @liid;
 	insert into `assignments` (`IID`, `Name`) values (@liid, name);
+	#commit;
 END$$
 
 
@@ -84,6 +86,7 @@ BEGIN
 
 	SELECT LAST_INSERT_ID() INTO @liid;
 	insert into `exams` (`IID`) values (@liid);
+	commit;
 END$$
 
 
@@ -105,6 +108,7 @@ BEGIN
 
 	SELECT LAST_INSERT_ID() INTO @liid;
 	insert into `meetings` (`IID`, `Subject`) values (@liid, subj);
+	commit;
 END$$
 
 
@@ -126,6 +130,7 @@ BEGIN
 
 	SELECT LAST_INSERT_ID() INTO @liid;
 	insert into `reminders` (`IID`) values (@liid);
+	commit;
 END$$
 
 
@@ -147,6 +152,7 @@ BEGIN
 
 	SELECT LAST_INSERT_ID() INTO @liid;
 	insert into `works` (`IID`, `Start_time`) values (@liid, TIME(subj));
+	commit;
 END$$
 
 
@@ -164,6 +170,7 @@ CREATE PROCEDURE activateschedule (schedID INT)
 BEGIN
 	SELECT `UID` INTO @uid FROM `schedules` WHERE `SID` = schedID;
 	UPDATE `users` SET `Active_SID` = schedID WHERE `UID` = @uid;
+	commit;
 END$$
 
 
@@ -190,6 +197,7 @@ CREATE PROCEDURE addteacher (name varchar(45), Department varchar(45))
 BEGIN
 	insert into `teachers` (`Name`, `Department`)
 				 values (name, department);
+	commit;
 END$$
 
 
@@ -279,7 +287,7 @@ BEGIN
 	FROM 
 		(((
 		`reminders` r 
-		left join `items` on a.`IID` = `items`.`IID`)
+		left join `items` on r.`IID` = `items`.`IID`)
 		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
 		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
 		WHERE `users`.`Name` = username;
@@ -329,16 +337,43 @@ BEGIN
 END$$
 
 
-delimiter $$
-USE `scheduleplanner`$$
+DROP PROCEDURE IF EXISTS storeuserassignments$$
+CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11), aname varchar(45), 
+	acid varchar(45), aprio tinyint(4), adiff tinyint(4), aduedate varchar(25))
+BEGIN
+	
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
+
+	SET @alreadythere = (EXISTS (SELECT * FROM `assignments` WHERE `IID` = aid));
+	#SELECT @alreadythere;
+	
+	IF @alreadythere THEN
+		SELECT "incomplete";
+	ELSE
+		insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Difficulty`)
+					 values (@SID, acid, DATE(aduedate), aprio, adiff);
+		commit;
+		
+		select LAST_INSERT_ID() INTO @liid;
+		insert into `assignments` (`IID`, `Name`)
+						values (@liid, aname);
+		commit;
+		SELECT "went";
+	END IF;
+END$$
+
+/*
 DROP PROCEDURE IF EXISTS storeuserassignments$$
 CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11),
  aname varchar(45), acid varchar(45), adiff tinyint(4), aduedate varchar(25))
 BEGIN
+	
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
 
-	IF (EXISTS (SELECT * FROM `assignments` WHERE `IID` = aid)) THEN
-		SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
-		
+	/*IF (EXISTS (SELECT * FROM `assignments` WHERE `IID` = aid)) THEN
+	
 		SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
 				INTO @duedate, @course, @diff, @cid
 			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid GROUP BY `items`.`IID`;
@@ -361,17 +396,26 @@ BEGIN
 			commit;
 		END IF;
 	ELSE
+		#(name varchar(45), userID INT, courseID INT, completeby varchar(20), priority INT, notes TEXT, diff INT)
+		#CALL addassignment (username, @UID, acid, DATE(aduedate), 1, NULL, adiff);
 		# new
-		INSERT INTO `assignments` (`Name`) VALUES (aname);
-		commit;
-		INSERT INTO `items` (`SID`, `CID`, `Difficulty`, `Complete_by`)
-					 VALUES (@SID, acid, adiff, DATE(aduedate));
-		commit;
-	END IF;
-	
-
+		#INSERT INTO `items` (`SID`, `CID`, `Difficulty`, `Complete_by`)
+		#			 VALUES (@SID, acid, adiff, DATE(aduedate));
+		#SELECT 
+		#commit;
+		#INSERT INTO `assignments` (`Name`) VALUES (aname);
+		#commit;
+		insert into `items` (`SID`, `CID`, `Complete_by`, `Difficulty`)
+					 values (@SID, acid, DATE(aduedate), adiff);
+		SELECT * FROM `items` WHERE `SID` = @SID;
+		#commit;
+		
+		#SELECT LAST_INSERT_ID() INTO @liid;
+		#insert into `assignments` (`IID`, `Name`) values (@liid, aname);
+		#commit;
+	#END IF;
 END$$
-	
+*/
 
 delimiter ;
 
