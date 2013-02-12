@@ -12,12 +12,7 @@
 	<link href="/assets/components/jquery-ui-1.9.1.custom/css/start/jquery-ui-1.9.1.custom.css" rel="stylesheet">
 	<script src="/assets/components/jquery-ui-1.9.1.custom/js/jquery-1.8.2.js"></script>
 	<script src="/assets/components/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.js"></script>
-
-
-
-
 </head>
-
 
 <body style="padding-top: 60px;">
 	<div class="navbar navbar-fixed-top">
@@ -28,7 +23,7 @@
 					<ul class="nav">
 						<li><a href="/">Home</a></li>
 						<li><a href="/login/courses?username={{username}}">Courses</a></li>
-						<li><a href="#">Contact</a></li>
+						<li><a href="/contact">Contact</a></li>
 					</ul>
 				</div>
 			</div>
@@ -38,28 +33,35 @@
 	<div class="container-fluid content">
 		<h1></h1>
 		<form method="post">
-			<table data-bind="visible: itemslist().length>=0">
+			<table data-bind="visible: meetingslist().length>=0">
 				<thead>
 					<tr>
-						<th><font size="5">Course</font></th>
+						<th><font size="5">Name</font></th>
+						<th><font size ="5">Course</font></th>
 						<th><font size ="5">Date</font></th>
+						<th><font size ="5">Time</font></th>
 					</tr>
 				</thead>
-				<tbody data-bind='foreach: itemslist'>
+				<tbody data-bind='foreach: meetingslist'>
 					<tr>
-						<td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'cName' "></select></td>
 
-						<td><input style="height:30px;" type="date" name="duedate"></input></td>
+						<td><input type="text" style="height:30px;" data-bind="value: mName"></input></td>
 
-						<td><a href='#' data-bind='click: $root.removeExam'><button type="button" class="btn btn-info">Delete</button></a></td>
+						<td><select data-bind="options: $root.courses, value: mCourse, optionsText: 'cName' "></select></td>
+
+						<td><input style="height:30px;" type="date"  data-bind="value: mDate"></td>
+
+                        <td><input style="height:30px;" type="date"  data-bind="value: mTime"></td>
+
+						<td><a href='#' data-bind='click: $root.removeMeeting'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
 
 
 					</tr>
 				</tbody>
 			</table>
-			<a href='#' data-bind='click: $root.addExam'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
+			<a href='#' data-bind='click: $root.addMeeting'><button type="button" class="btn btn-info">Add Reminder</button></a>
 			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
-			<input class="btn" type="submit"></input>
+			<input class="btn" type="submit">
 
 		</form>
 	</div>
@@ -75,47 +77,27 @@
 	</div>
 
 	<br><br><br><br>
-	
-
 
 	<!--  -->
 	<script type="text/javascript">
-	$(function(){
-		function getData() {
+	$(function($){
+		function getItems() {
 			istr = '{{items}}'.replace(/&#34;/g, '"');
-			items = JSON.parse(istr);
-			return items
-		};
-		var items = getData();
+			return JSON.parse(istr);
+		}
 		function getUserCourses() {
 			istr = '{{usercourses}}'.replace(/&#34;/g, '"');
 			items = JSON.parse(istr);
-			return items
-		};
-		var usercourses = getUserCourses();
-
-		// console.log(items);
-
-		function Item(course, date){
-			var self = this;
-
-			self.itemCourse = ko.observable(course);
-			self.itemDate = ko.observable(date);
-			//self.itemPriority = ko.computed();
+			return items;
 		}
 		function UserCourse (name, diff){
 			var self = this;
 			//console.log(name.CID);
-			self.cName = ko.observable(name);
-			self.diff = ko.observable(diff);
+			self.cName = name;
+			self.diff = diff;
 		}
-		function parseExams(exams){
-			itmlist =[];
-			for(var i=0; i<items.length; i++){
-				itmlist.push(new Item(items[i].CourseName, items[i].Date));
-			}
-			return itmlist;
-		}
+		var meetings = getItems();
+		var usercourses = getUserCourses();
 		function parseUserCourses(courses){
 			cList = [];
 			courses.forEach(function(c, i) {
@@ -126,41 +108,40 @@
 			return cList;
 
 		}
+		var usercoursesarray = parseUserCourses(usercourses);
+		//console.log(meetings);
 
+		function Meeting (name, course, date, time){
+			var self = this;
 
-		var itemsarray = parseExams(items);
-		var coursesarray = parseUserCourses(usercourses);
-		console.log(coursesarray);
-		function ItemViewModel (itemsarray, coursesarray){
-			var self =this;
-			self.courses = coursesarray;
+			self.mName = name;
+			self.mCourse = course;
+			self.mDate = date;
+			self.mTime = time;
 
-			self.itemslist = ko.observableArray(itemsarray);
-
-			self.addExam = function() {
-				self.itemslist.push(new Item(self.courses[0], new Date()));
-			}
-
-			self.removeExam = function(itm){
-				self.itemslist.remove(itm)
-			}
-
-			self.submitMe = function() {
-				// gather myself for posting
-				return ko.toJSON($root, null, 2);
-			}
 		}
-		ko.applyBindings(new ItemViewModel(itemsarray, coursesarray));
+		var meetingsarray =[];
+		console.log(usercoursesarray);
+		function MeetingViewModel (meetingsarray, usercoursesarray){
+			var self =this;
+			self.courses = usercoursesarray;
+			self.meetingslist = ko.observableArray(meetingsarray)
+
+			self.addMeeting = function(){
+				self.meetingslist.push(new Meeting("new meeting", self.courses[0], new Date(), new Date()));
+
+			}
+
+			self.removeMeeting = function(itm){
+				self.meetingslist.remove(itm);
+			}
+
+
+		}
+
+		ko.applyBindings(new MeetingViewModel(meetingsarray, usercoursesarray))
 	//formatting
-
-	
-	
-})	
-
-
-
-
-
+})
 </script>
 
 <script src="/assets/bootstrap/js/bootstrap.js"></script>

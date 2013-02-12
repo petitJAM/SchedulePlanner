@@ -148,26 +148,13 @@ class ReminderHandler(TemplateHandler):
 class MeetingHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
-        schedule = getUserAssignments(username)
-        jsonschedule = json.dumps(schedule, default=dthandler)
-        inserts={'username': username, 'items':jsonschedule}
-        self.renderFile("meeting.html", **inserts)
+        meetings =  getUserMeetings(username)
+        jsonmeetings = json.dumps(meetings, default=dthandler)
+        usercourses = getUserCourses(username)
+        jsonUserCourses = json.dumps(usercourses,default =dthandler)
+        inserts = {'username': username, 'items':jsonmeetings, 'usercourses': jsonUserCourses}
+        self.renderFile("meetings.html", **inserts)
 
-    def post(self):
-        username = self.request.get('username')
-        data = json.loads(data)
-        for i in range(0, len(data['itemslist'])):
-          storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'],
-           data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'],
-            data['itemslist'][i]['itemDate'])
-
-        # update
-        print self.request.get('courses')
-
-        schedule = getUserAssignments(username)
-        jsonschedule = json.dumps(schedule, default=dthandler)
-        inserts ={'username': username, 'items':jsonschedule}
-        self.renderFile("meeting.html", **inserts)
 
 class SignupHandler(TemplateHandler):
     def get(self):
@@ -278,7 +265,7 @@ app = webapp2.WSGIApplication([('/signup', SignupHandler),
                                 ('/login/scheduler/exams', ExamHandler),
                                 ('/login/scheduler/work', WorkHandler),
                                 ('/login/scheduler/reminders', ReminderHandler),
-                                ('/login/scheduler/meeting', MeetingHandler),
+                                ('/login/scheduler/meetings', MeetingHandler),
                                 ('/login/courses', CoursesHandler),
                                 ('/', MainHandler),
                                 ('/contact', ContactHandler)], 

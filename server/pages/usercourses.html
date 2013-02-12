@@ -52,7 +52,6 @@
 					</tr>
 				</tbody>
 			</table>
-
 			<a href='#' data-bind='click: $root.addCourse'><button type="button" class="btn btn-info" data-toggle="button">Add Course</button></a>
 				<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
 				<textarea name ="tester" style="visibility: ;">{{data}}</textarea>
@@ -81,12 +80,12 @@
 			istr = '{{usercourses}}'.replace(/&#34;/g, '"');
 			items = JSON.parse(istr);
 			return items
-		};
+		}
 		function getAllCourses() {
 			istr = '{{allcourses}}'.replace(/&#34;/g, '"');
 			items = JSON.parse(istr);
 			return items
-		};
+		}
 		var usercourses = getUserCourses();
 		var allcourses = getAllCourses();
 		//console.log(usercourses);
