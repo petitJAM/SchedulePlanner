@@ -300,7 +300,7 @@ BEGIN
 	FROM 
 		((((
 		`meetings` m 
-		left join `items` on a.`IID` = `items`.`IID`)
+		left join `items` on m.`IID` = `items`.`IID`)
 		left join `schedules` on `items`.`IID` = `schedules`.`SID`)
 		left join `courses` on `items`.`CID` = `courses`.`CID`)
 		left join `users` on `schedules`.`SID` = `users`.`Active_SID`)
