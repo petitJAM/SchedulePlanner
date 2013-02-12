@@ -32,7 +32,7 @@
 
     <div class="container-fluid content">
         <h1></h1>
-        <form method="post" data-bind="submit:submitMe">
+        <form method="post">
             <table data-bind="visible: itemslist().length>=0">
                 <thead>
                     <tr>
@@ -47,11 +47,11 @@
 
                         <td><input style="height:30px;" class='required' type="text" data-bind='value:itemName' /></td>
 
-                        <td><input style="height:30px;" type="date" name="duedate"></td>
+                        <td><input style="height:30px;" type="date" name="duedate1" data-bind="value: itemDate"></td>
 
-                        <td><input style="height:30px;" type="date" name="duedate"></td>
+                        <td><input style="height:30px;" type="date" name="duedate2" data-bind="value: itemStartTime"></td>
 
-                        <td><input style="height:30px;" type="date" name="duedate"></td>
+                        <td><input style="height:30px;" type="date" name="duedate3" data-bind="value: itemEndTime"></td>
 
                         <td><a href='#' data-bind='click: $root.removeItem'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
 
@@ -111,31 +111,21 @@
         function ItemViewModel (itemsarray){
             var self = this;
 
-            self.difficultyValues = [
-            {diffName: "ChooseOne", diff: 0},
-            {diffName: "snore..zzz", diff: 1},
-            {diffName: "easy stuff", diff: 2},
-            {diffName: "yipes! focus now!", diff: 3},
-            {diffName: "Gonna be up late :(", diff: 4},
-            {diffName: "OH S**T FML!", diff: 5}
-            ];
-
             self.itemslist = ko.observableArray(itemsarray);
 
             self.addItem = function() {
-                self.itemslist.push(new Item("<i>Enter job</i>", new Date(), new Date(), new Date());
+                self.itemslist.push(
+                    new Item("<i>Enter job</i>", new Date(), new Date(), new Date())
+                    );
             }
 
             self.removeItem = function(itm){
                 self.itemslist.remove(itm);
             }
 
-            self.submitMe = function() {
-                // gather myself for posting
-                return ko.toJSON($root, null, 2);
-            }
+          
         }
-        ko.applyBindings(new ItemViewModel(itemsarray, coursesarray));
+        ko.applyBindings(new ItemViewModel(itemsarray));
     //formatting
 })
 </script>
