@@ -349,7 +349,28 @@ BEGIN
 	#SELECT @alreadythere;
 	
 	IF @alreadythere THEN
-		SELECT "incomplete";
+		SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
+				INTO @duedate, @course, @diff, @cid
+			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid GROUP BY `items`.`IID`;
+
+		UPDATE `assignments` SET `Name` = aname WHERE `IID` = aid;
+		commit;
+
+		IF (adiff != @diff)THEN
+			UPDATE `items` SET `Difficulty` = adiff WHERE `SID` = @SID AND `IID` = aid;
+			commit;
+		END IF;
+
+		IF (aduedate != @duedate) THEN
+			UPDATE `items` SET `Complete_by` = DATE(aduedate) WHERE `SID` = @SID AND `IID` = aid;
+			commit;
+		END IF;
+
+		IF (acid != @cid) THEN
+			UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
+			commit;
+		END IF;
+		#SELECT "update";
 	ELSE
 		insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Difficulty`)
 					 values (@SID, acid, DATE(aduedate), aprio, adiff);
@@ -359,9 +380,10 @@ BEGIN
 		insert into `assignments` (`IID`, `Name`)
 						values (@liid, aname);
 		commit;
-		SELECT "went";
+		#SELECT "insert";
 	END IF;
 END$$
+
 
 /*
 DROP PROCEDURE IF EXISTS storeuserassignments$$
