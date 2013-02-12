@@ -79,7 +79,7 @@ class CoursesHandler(TemplateHandler):
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
         sid =getUserActiveScheduleID(username)
- 
+
         for i in range(0, len(data['courseslist'])):
              storeUserCourses(sid['Active_SID'],
                 data['courseslist'][i]['cName']['CID'],
@@ -119,9 +119,11 @@ class AssignmentsHandler(TemplateHandler):
 class ExamHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
-        schedule = getUserExams(username)
-        jsonschedule = json.dumps(schedule, default=dthandler)
-        inserts={'username': username, 'items':jsonschedule}
+        exams = getUserExams(username)
+        jsonexams = json.dumps(exams, default=dthandler)
+        usercourses = getUserCourses(username)
+        jsonUserCourses = json.dumps(usercourses,default =dthandler)
+        inserts={'username': username, 'items':jsonexams, 'usercourses':jsonUserCourses}
         self.renderFile("exams.html", **inserts)
 
 class WorkHandler(TemplateHandler):

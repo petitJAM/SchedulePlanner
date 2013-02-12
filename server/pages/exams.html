@@ -37,7 +37,7 @@
 
 	<div class="container-fluid content">
 		<h1></h1>
-		<form method="post" data-bind="submit:submitMe">
+		<form method="post">
 			<table data-bind="visible: itemslist().length>=0">
 				<thead>
 					<tr>
@@ -47,17 +47,18 @@
 				</thead>
 				<tbody data-bind='foreach: itemslist'>
 					<tr>
-						<td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'courseName' "></select></td>
+						<td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'cName' "></select></td>
 
 						<td><input style="height:30px;" type="date" name="duedate"></td>
 
-						<td><a href='#' data-bind='click: $root.removeItem'><button type="button" class="btn btn-info">Delete</button></a></td>
+						<td><a href='#' data-bind='click: $root.removeExam'><button type="button" class="btn btn-info">Delete</button></a></td>
 
 
 					</tr>
 				</tbody>
 			</table>
-			<a href='#' data-bind='click: $root.addExams'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
+			<a href='#' data-bind='click: $root.addExam'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
+			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
 			<input class="btn" type="submit"></input>
 
 		</form>
@@ -86,8 +87,14 @@
 			return items
 		};
 		var items = getData();
+		function getUserCourses() {
+			istr = '{{usercourses}}'.replace(/&#34;/g, '"');
+			items = JSON.parse(istr);
+			return items
+		};
+		var usercourses = getUserCourses();
 
-		console.log(items);
+		// console.log(items);
 
 		function Item(course, date){
 			var self = this;
@@ -96,6 +103,12 @@
 			self.itemDate = ko.observable(date);
 			//self.itemPriority = ko.computed();
 		}
+		function UserCourse (name, diff){
+			var self = this;
+			//console.log(name.CID);
+			self.cName = ko.observable(name);
+			self.diff = ko.observable(diff);
+		}
 		function parseExams(exams){
 			itmlist =[];
 			for(var i=0; i<items.length; i++){
@@ -103,48 +116,32 @@
 			}
 			return itmlist;
 		}
-		function parseCourses(exams){
-			cList =[];
-			for(var i=0; i<items.length; i++){
-				var inList =false;
-				for(var j=0; j<cList.length; j++){
-					if(cList[j].courseID = items[i].CourseID){
-						inList =true;
-					}
-				}
-				if(inList){
-					continue;
-				}else{
-					cList.push({courseName: items[i].CourseName, courseID: items[i].CourseID})
-				}
-
-			}
+		function parseUserCourses(courses){
+			cList = [];
+			courses.forEach(function(c, i) {
+				//console.log(c);
+				cList.push(new UserCourse(c.CourseName, c.Difficulty));
+			});
+			//console.log(cList);
 			return cList;
+
 		}
 
-		var itemsarray = parseAssignments(items);
-		var coursesarray = parseCourses(items);
+
+		var itemsarray = parseExams(items);
+		var coursesarray = parseUserCourses(usercourses);
 		console.log(coursesarray);
 		function ItemViewModel (itemsarray, coursesarray){
 			var self =this;
 			self.courses = coursesarray;
 
-			self.difficultyValues = [
-			{diffName: "ChooseOne", diff: 0},
-			{diffName: "snore..zzz", diff: 1},
-			{diffName: "easy stuff", diff: 2},
-			{diffName: "yipes! focus now!", diff: 3},
-			{diffName: "Gonna be up late :(", diff: 4},
-			{diffName: "OH S**T FML!", diff: 5}
-			];
-
 			self.itemslist = ko.observableArray(itemsarray);
 
-			self.addExams = function() {
-				self.itemslist.push(new Item("dummy text", self.courses[0],self.difficultyValues[0], new Date(), 100));
+			self.addExam = function() {
+				self.itemslist.push(new Item(self.courses[0], new Date()));
 			}
 
-			self.removeItem = function(itm){
+			self.removeExam = function(itm){
 				self.itemslist.remove(itm)
 			}
 
