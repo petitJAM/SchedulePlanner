@@ -268,8 +268,8 @@ BEGIN
 END$$
 
 DROP PROCEDURE IF EXISTS storeuserexams$$
-CREATE PROCEDURE storeuserexams (username varchar(20), aid int(11), aname varchar(45), 
-	acid varchar(45), aduedate varchar(25))
+CREATE PROCEDURE storeuserexams (username varchar(20), acid int(11), aduedate varchar(25), 
+aid int(11) )
 BEGIN
 	
 	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
@@ -283,8 +283,6 @@ BEGIN
 				INTO @duedate, @course, @cid
 			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid GROUP BY `items`.`IID`;
 
-		UPDATE `exams` SET `Name` = aname WHERE `IID` = aid;
-		commit;
 
 		IF (aduedate != @duedate) THEN
 			UPDATE `items` SET `Complete_by` = DATE(aduedate) WHERE `SID` = @SID AND `IID` = aid;
@@ -301,8 +299,8 @@ BEGIN
 		commit;
 		
 		select LAST_INSERT_ID() INTO @liid;
-		insert into `exams` (`IID`, `Name`)
-						values (@liid, aname);
+		insert into `exams` (`IID`)
+						values (@liid);
 		commit;
 	END IF;
 END$$
