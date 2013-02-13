@@ -86,7 +86,7 @@ class CoursesHandler(TemplateHandler):
                  data['courseslist'][i]['diff'])
         usercourses = getUserCourses(username)
         allcourses = getAllCourses()
-        jsonUserCourses = json.dumps(usercourses,default =dthandler)
+        jsonUserCourses = json.dumps(usercourses, default=dthandler)
         jsonAllCourses = json.dumps(allcourses, default=dthandler)
         inserts ={'username': username, 'usercourses':jsonUserCourses, 'allcourses':jsonAllCourses, 'data': jsonUserCourses}
         self.renderFile("usercourses.html", **inserts)    
@@ -122,7 +122,7 @@ class ExamHandler(TemplateHandler):
         exams = getUserExams(username)
         jsonexams = json.dumps(exams, default=dthandler)
         usercourses = getUserCourses(username)
-        jsonUserCourses = json.dumps(usercourses,default =dthandler)
+        jsonUserCourses = json.dumps(usercourses, default=dthandler)
         inserts={'username': username, 'items':jsonexams, 'usercourses':jsonUserCourses}
         self.renderFile("exams.html", **inserts)
 
