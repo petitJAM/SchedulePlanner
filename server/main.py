@@ -172,7 +172,20 @@ class ReminderHandler(TemplateHandler):
         inserts={'username': username, 'items':jsonreminder}
         self.renderFile("reminders.html", **inserts)
 
+    def post(self):
+        username = self.request.get('username')
+        data = self.request.get('bunchesofdata')
+        data = json.loads(data)
+        for i in range(0, len(data['itemslist'])):
+            storeUserReminders(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+            
+        # update
+        print self.request.get('courses')
 
+        schedule = getUserReminders(username)
+        jsonschedule = json.dumps(schedule, default=dthandler)
+        inserts = {'username': username, 'items':jsonschedule}
+        self.renderFile("reminders.html", **inserts)
 
 
 class MeetingHandler(TemplateHandler):
@@ -183,6 +196,21 @@ class MeetingHandler(TemplateHandler):
         usercourses = getUserCourses(username)
         jsonUserCourses = json.dumps(usercourses,default =dthandler)
         inserts = {'username': username, 'items':jsonmeetings, 'usercourses': jsonUserCourses}
+        self.renderFile("meetings.html", **inserts)
+
+    def post(self):
+        username = self.request.get('username')
+        data = self.request.get('bunchesofdata')
+        data = json.loads(data)
+        for i in range(0, len(data['itemslist'])):
+            storeUserMeetings(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+            
+        # update
+        print self.request.get('courses')
+
+        schedule = getUserExams(username)
+        jsonschedule = json.dumps(schedule, default=dthandler)
+        inserts = {'username': username, 'items':jsonschedule}
         self.renderFile("meetings.html", **inserts)
 
 
