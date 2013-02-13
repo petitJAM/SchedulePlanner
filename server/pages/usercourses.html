@@ -167,12 +167,14 @@
 			// 	self.courseslist.push(new UserCourse(allcoursesarray[0], self.difficultyValues[0]));
 			// }
 			self.addCourse = function(){
-				if(self.courseToAdd()!= "")
-
-				obj ={cName: self.courseToAdd().Name, cID:self.courseToAdd().CID, diff:self.difficultyToAdd().diff};
-				self.courseslist.push(obj);
-				self.courseToAdd("");
-				self.difficultyToAdd("");
+				if(self.courseToAdd()!= "" && self.difficultyToAdd!=""){
+					obj ={cName: self.courseToAdd().Name, cID:self.courseToAdd().CID, diff:self.difficultyToAdd().diff};
+					if(self.courseslist.indexOf(obj) < 0){
+						self.courseslist.push(obj);
+					}
+					self.courseToAdd("");
+					self.difficultyToAdd("");
+				}
 			};
 
 			self.removeCourse = function(itm){
