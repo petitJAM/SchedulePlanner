@@ -267,6 +267,45 @@ BEGIN
 	END IF;
 END$$
 
+DROP PROCEDURE IF EXISTS storeuserexams$$
+CREATE PROCEDURE storeuserexams (username varchar(20), aid int(11), aname varchar(45), 
+	acid varchar(45), aduedate varchar(25))
+BEGIN
+	
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
+
+	SET @alreadythere = (EXISTS (SELECT * FROM `exams` WHERE `IID` = aid));
+	#SELECT @alreadythere;
+	
+	IF @alreadythere THEN
+		SELECT `items`.`Complete_by`,  `courses`.`Name`, `items`.`CID` 
+				INTO @duedate, @course, @cid
+			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid GROUP BY `items`.`IID`;
+
+		UPDATE `exams` SET `Name` = aname WHERE `IID` = aid;
+		commit;
+
+		IF (aduedate != @duedate) THEN
+			UPDATE `items` SET `Complete_by` = DATE(aduedate) WHERE `SID` = @SID AND `IID` = aid;
+			commit;
+		END IF;
+
+		IF (acid != @cid) THEN
+			UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
+			commit;
+		END IF;
+	ELSE
+		insert into `items` (`SID`, `CID`, `Complete_by`)
+					 values (@SID, acid, DATE(aduedate));
+		commit;
+		
+		select LAST_INSERT_ID() INTO @liid;
+		insert into `exams` (`IID`, `Name`)
+						values (@liid, aname);
+		commit;
+	END IF;
+END$$
 
 /*
 DROP PROCEDURE IF EXISTS storeuserassignments$$
