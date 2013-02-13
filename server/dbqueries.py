@@ -78,6 +78,11 @@ def storeUserAssignments(username, aID, aName, aCID, aDiff, aDate):
     cur.callproc('storeuserassignments',(username, aID, aName, aCID, aDiff, aDate))
     cur.close()
 
+def storeUserExams(username, eID, eCID, eDiff, eDate):
+    cur = db.cursor()
+    cur.callproc('storeuserexams', (username, eID, eCID, eDiff, eDate))
+    cur.close()
+
 def getUserCourses(username):
     cur = db.cursor()
     cur.callproc('getusercourses',(username,))

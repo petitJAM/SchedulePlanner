@@ -107,7 +107,7 @@ class AssignmentsHandler(TemplateHandler):
         data = json.loads(data)
         for i in range(0, len(data['itemslist'])):
             storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'], data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
-            
+
         # update
         print self.request.get('courses')
 
@@ -131,15 +131,15 @@ class ExamHandler(TemplateHandler):
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
         for i in range(0, len(data['itemslist'])):
-            storeUserAssignments(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemName'], data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+            storeUserExams(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
             
         # update
         print self.request.get('courses')
 
-        schedule = getUserAssignments(username)
+        schedule = getUserExams(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
         inserts = {'username': username, 'items':jsonschedule}
-        self.renderFile("assignments.html", **inserts)
+        self.renderFile("exams.html", **inserts)
 
 class WorkHandler(TemplateHandler):
     def get(self):
@@ -147,6 +147,21 @@ class WorkHandler(TemplateHandler):
         schedule = getUserWork(username)
         jsonschedule = json.dumps(schedule, default=dthandler)
         inserts={'username': username, 'items':jsonschedule}
+        self.renderFile("work.html", **inserts)
+
+    def post(self):
+        username = self.request.get('username')
+        data = self.request.get('bunchesofdata')
+        data = json.loads(data)
+        for i in range(0, len(data['itemslist'])):
+            storeUserWork(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+            
+        # update
+        print self.request.get('courses')
+
+        schedule = getUserWork(username)
+        jsonschedule = json.dumps(schedule, default=dthandler)
+        inserts = {'username': username, 'items':jsonschedule}
         self.renderFile("work.html", **inserts)
 
 class ReminderHandler(TemplateHandler):
