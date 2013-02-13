@@ -79,11 +79,11 @@ class CoursesHandler(TemplateHandler):
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
         sid =getUserActiveScheduleID(username)
-        removeAllCourses(sid['Active_SID'],data['courseslist'][0]['cName']['CID'])
+        removeAllCourses(sid['Active_SID'],data['courseslist'][0]['cID'])
         for i in range(0, len(data['courseslist'])):
              storeUserCourses(sid['Active_SID'],
-                data['courseslist'][i]['cName']['CID'],
-                 data['courseslist'][i]['diff']['diff'])
+                data['courseslist'][i]['cID'],
+                 data['courseslist'][i]['diff'])
         usercourses = getUserCourses(username)
         allcourses = getAllCourses()
         jsonUserCourses = json.dumps(usercourses,default =dthandler)

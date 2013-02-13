@@ -31,30 +31,51 @@
 
 	<div class="container-fluid content">
 
-		<form method= "post">
+		<form data-bind="submit: addCourse">
+			<table>
+				<thead>
+					<tr>
+						<th><font size="5">Add Course</font></th>
+						<th><font size ="5">Add Course Diff.</font></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><select data-bind="options: givencourses, value: courseToAdd, optionsText: 'Name' "></select>
+						</td>
+						<td>
+						<select data-bind="options: difficultyValues, value:difficultyToAdd, optionsText: 'diffName' "></select>
+						</td>
+						<td>
+						<button class="btn btn-info" type="submit">Add Course</button>	
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br><br>
 			<table data-bind="visible: courseslist().length>=0">
 				<thead>
 					<tr>
-						<th><font size="5">Course</font></th>
-						<th><font size ="5">Course Diff.</font></th>
+						<th><font size="5">Stored Courses</font></th>
+						<th><font size ="5">Stored Difficulties</font></th>
 					</tr>
 				</thead>
 				<tbody data-bind='foreach: courseslist'>
 					<tr>
 
-						<td><select data-bind="options: $root.givencourses, value: cName, optionsText: 'Name' "></select></td>
-
-						<td><select data-bind="options: $root.difficultyValues, value: diff, optionsText: 'diffName' "></select></td>
-
+						<td><input data-bind="value: cName" disabled></input></td>
+						<td><input data-bind="value: diff" disabled></input></td>
 						<td><a href='#' data-bind='click: $root.removeCourse'><button type="button" class="btn btn-info" data-toggle="button">Delete</button></a></td>
 
 
 					</tr>
 				</tbody>
 			</table>
-			<a href='#' data-bind='click: $root.addCourse'><button type="button" class="btn btn-info" data-toggle="button">Add Course</button></a>
-				<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
-				<textarea name ="tester" style="visibility: ;">{{data}}</textarea>
+		</form>
+
+		<form method= "post">
+				<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility:hidden;"></textarea>
+				<textarea name ="tester" style="visibility:hidden;">{{data}}</textarea>
 			<input class="btn" type="submit">
 		</form>
 		
@@ -88,13 +109,14 @@
 		}
 		var usercourses = getUserCourses();
 		var allcourses = getAllCourses();
-		//console.log(usercourses);
+		console.log(usercourses);
 
-		function UserCourse (name, diff){
+		function UserCourse (name, diff,cid){
 			var self = this;
 			//console.log(name.CID);
 			self.cName = ko.observable(name);
 			self.diff = ko.observable(diff);
+			self.cID = ko.observable(cid);
 		}
 		function Course(name, CID, teacher){
 			var self= this;
@@ -107,7 +129,7 @@
 			cList = [];
 			courses.forEach(function(c, i) {
 				//console.log(c);
-				cList.push(new UserCourse(c.CourseName, c.Difficulty));
+				cList.push(new UserCourse(c.CourseName, c.Difficulty,c.CourseID));
 			});
 			//console.log(cList);
 			return cList;
@@ -126,9 +148,11 @@
 		
 		function CourseViewModel(usercoursesarray, allcoursesarray){
 			var self = this;
-
-			self.courseslist = ko.observableArray(usercoursesarray)
+			self.courseToAdd= ko.observable("");
+			self.difficultyToAdd = ko.observable("");
+			self.courseslist = ko.observableArray(usercoursesarray);
 			self.givencourses = allcoursesarray;
+			self.selectedCourses = ko.observableArray([]);
 
 			self.difficultyValues = [
 			{diffName: "ChooseOne", diff: 0},
@@ -139,17 +163,25 @@
 			{diffName: "OH S**T FML!", diff: 5}
 			];
 
+			// self.addCourse = function(){
+			// 	self.courseslist.push(new UserCourse(allcoursesarray[0], self.difficultyValues[0]));
+			// }
 			self.addCourse = function(){
-				self.courseslist.push(new UserCourse(allcoursesarray[0], self.difficultyValues[0]));
-			}
+				if(self.courseToAdd()!= "")
+
+				obj ={cName: self.courseToAdd().Name, cID:self.courseToAdd().CID, diff:self.difficultyToAdd().diff};
+				self.courseslist.push(obj);
+				self.courseToAdd("");
+				self.difficultyToAdd("");
+			};
 
 			self.removeCourse = function(itm){
 				self.courseslist.remove(itm);
-			}
+			};
 
 
 		}
-		ko.applyBindings(new CourseViewModel(usercoursesarray, allcoursesarray))
+		ko.applyBindings(new CourseViewModel(usercoursesarray, allcoursesarray));
 	//formatting
 })
 </script>
