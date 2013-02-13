@@ -49,120 +49,6 @@ BEGIN
 	delete from `coursesinschedules` where `SID`=schedID AND `CID`=cID;
 END$$
 
-# Add Item
-DROP PROCEDURE IF EXISTS additem$$
-CREATE PROCEDURE additem (schedID INT, courseID INT, completeby varchar(20), 
-						  priority INT, notes TEXT, diff INT)
-BEGIN
-	insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Notes`, `Difficulty`)
-				 values (schedID, courseID, completeby, priority, notes, diff);
-END$$
-
-
-# Add Assignment
-DROP PROCEDURE IF EXISTS addassignment$$
-CREATE PROCEDURE addassignment (name varchar(45), userID INT, courseID INT, 
-								completeby varchar(20), priority INT, notes TEXT, diff INT)
-BEGIN
-	SELECT `Active_SID` into @schedID FROM `users` WHERE `UID`=userID;
-	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
-
-	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `assignments` (`IID`, `Name`) values (@liid, name);
-END$$
-
-
-# Delete Assignment
-DROP PROCEDURE IF EXISTS delassignment$$
-CREATE PROCEDURE delassignment (assignID INT)
-BEGIN
-	DELETE FROM `assignments` WHERE `IID` = assignID;
-END$$
-
-
-# Add Exam
-DROP PROCEDURE IF EXISTS addexam$$
-CREATE PROCEDURE addexam (userID INT, courseID INT, completeby varchar(20), 
-						  priority INT, notes TEXT, diff INT)
-BEGIN
-	SELECT `Active_SID` into @schedID FROM `users` WHERE `UID`=userID;
-	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
-
-	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `exams` (`IID`) values (@liid);
-END$$
-
-
-# Delete 
-DROP PROCEDURE IF EXISTS delexam$$
-CREATE PROCEDURE delexam (examID INT)
-BEGIN
-	DELETE FROM `exams` WHERE `IID` = examID;
-END$$
-
-
-# Add Meeting
-DROP PROCEDURE IF EXISTS addmeeting$$
-CREATE PROCEDURE addmeeting (subj varchar(45), userID INT, courseID INT, 
-							 completeby varchar(20), priority INT, notes TEXT, diff INT)
-BEGIN
-	SELECT `Active_SID` into @schedID FROM `users` WHERE `UID`=userID;
-	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
-
-	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `meetings` (`IID`, `Subject`) values (@liid, subj);
-END$$
-
-
-# Delete Meeting
-DROP PROCEDURE IF EXISTS delmeeting$$
-CREATE PROCEDURE delmeeting (meetingID INT)
-BEGIN
-	DELETE FROM `meetings` WHERE `IID` = meetingID;
-END$$
-
-
-# Add Reminder
-DROP PROCEDURE IF EXISTS addreminder$$
-CREATE PROCEDURE addreminder (userID INT, courseID INT, completeby varchar(20), 
-							  priority INT, notes TEXT, diff INT)
-BEGIN
-	SELECT `Active_SID` into @schedID FROM `users` WHERE `UID`=userID;
-	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
-
-	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `reminders` (`IID`) values (@liid);
-END$$
-
-
-# Delete Reminder
-DROP PROCEDURE IF EXISTS delreminder$$
-CREATE PROCEDURE delreminder (reminID INT)
-BEGIN
-	DELETE FROM `reminders` WHERE `IID` = reminID;
-END$$
-
-
-# Add Work
-DROP PROCEDURE IF EXISTS addwork$$
-CREATE PROCEDURE addwork (stime varchar(45), userID INT, courseID INT, 
-						  completeby varchar(20), priority INT, notes TEXT, diff INT)
-BEGIN
-	SELECT `Active_SID` into @schedID FROM `users` WHERE `UID`=userID;
-	CALL additem (@schedID, courseID, completeby, priority, notes, diff);
-
-	SELECT LAST_INSERT_ID() INTO @liid;
-	insert into `works` (`IID`, `Start_time`) values (@liid, TIME(subj));
-END$$
-
-
-# Delete Work
-DROP PROCEDURE IF EXISTS delwork$$
-CREATE PROCEDURE delwork (workID INT)
-BEGIN
-	DELETE FROM `works` WHERE `IID` = workID;
-END$$
-
 
 # New Active Schedule
 DROP PROCEDURE IF EXISTS activateschedule$$
@@ -335,6 +221,7 @@ BEGIN
 END$$
 
 
+# (username, assignmentID, assignmentName, CID, Prio, Diff, Duedate)
 DROP PROCEDURE IF EXISTS storeuserassignments$$
 CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11), aname varchar(45), 
 	acid varchar(45), aprio tinyint(4), adiff tinyint(4), aduedate varchar(25))
