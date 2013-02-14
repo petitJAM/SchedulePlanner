@@ -34,7 +34,7 @@
 
     <div class="container-fluid content">
         <h1></h1>
-        <form data-bind="submit: addWork">
+        <form data-bind="submit: addWorkItem">
             <table>
                 <thead>
                     <tr>
@@ -44,26 +44,29 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input data-bind="value: workToAdd"></input></td>
+                        <td><input style="height:30px;" type="text" data-bind="value: workToAdd"></input></td>
                         <td><input style="height:30px;" type="date" data-bind="value:dateToAdd"></input></td>
-                        <td><button class="btn btn-info" type="submit">Add Exam </button></td>
+                        <td><input style="height:30px;" type="text" data-bind="value: stimeToAdd"></input></td>
+                        <td><input style="height:30px;" type="text" data-bind="value: etimeToAdd"></input></td>
+                        <td><button class="btn btn-info" type="submit">Add Work </button></td>
                     </tr>
                 </tbody>
             </table>
             <table data-bind="visible: worklist().length>=0">
                 <thead>
                     <tr>
-                        <th><font size="5">Stored Exams</font></th>
+                        <th><font size="5">Stored Work</font></th>
                         <th><font size ="5">Stored Dates</font></th>
                     </tr>
                 </thead>
                 <tbody data-bind='foreach: worklist'>
                     <tr>
-                        <td><input disabled data-bind="value: examCourse"></input></td>
+                        <td><input disabled data-bind="value: wName"></input></td>
+                        <td><input disabled data-bind="value: wDate"></input></td>
+                        <td><input disabled data-bind="value: stime"></input></td>
+                        <td><input disabled data-bind="value: etime"></input></td>
 
-                        <td><input disabled data-bind="value: examDate"></input></td>
-
-                        <td><a href='#' data-bind='click: $root.removeExam'><button type="button" class="btn btn-info">Delete</button></a></td>
+                        <td><a href='#' data-bind='click: $root.removeWorkItem'><button type="button" class="btn btn-info">Delete</button></a></td>
 
 
                     </tr>
@@ -99,68 +102,40 @@
             return items
         };
         var items = getData();
-        function getUserCourses() {
-            istr = '{{usercourses}}'.replace(/&#34;/g, '"');
-            items = JSON.parse(istr);
-            return items
-        };
-        var usercourses = getUserCourses();
         console.log(items);
-        function Exam(course, date){
-            var self = this;
-            self.examCourse = ko.observable(course);
-            self.examDate = ko.observable(date);
-            //self.itemPriority = ko.computed();
-        }
-        function UserCourse (name, diff){
-            var self = this;
-            //console.log(name.CID);
-            self.cName = ko.observable(name);
-            self.diff = ko.observable(diff);
-        }
-        function parseExams(exams){
-            itmlist =[];
-            for(var i=0; i<items.length; i++){
-                itmlist.push(new Exam(items[i].CourseName, items[i].Date));
-            }
-            return itmlist;
-        }
-        function parseUserCourses(courses){
-            cList = [];
-            courses.forEach(function(c, i) {
-                //console.log(c);
-                cList.push(new UserCourse(c.CourseName, c.Difficulty));
-            });
-            //console.log(cList);
-            return cList;
-        }
-        var examsarray = parseExams(items);
-        var coursesarray = parseUserCourses(usercourses);
-        console.log(coursesarray);
+
+        function Work(name, date, stime, etime){
+            self.wName = name;
+            self.wDate = date;
+            self.stime = stime;
+            self.etime = etime;
+        };
+ 
         var workarray = [];
         function WorkViewModel (workarray){
             var self =this;
-            self.givencourses = coursesarray;
-            self.worklist = ko.observableArray(examsarray);
+            self.worklist = ko.observableArray(workarray);
 
             self.workToAdd = ko.observable("");
             self.dateToAdd = ko.observable("");
+            self.stimeToAdd = ko.observable("");
+            self.etimeToAdd = ko.observable("");
 
-            self.addWork = function() {
-                if(self.workToAdd()!="" && self.dateToAdd !=""){
-                    obj = {examCourse: self.workToAdd(), examDate: self.dateToAdd()};
+            self.addWorkItem = function() {
+                if((self.workToAdd()!="") && (self.dateToAdd !="")){
+                    obj ={wName: self.workToAdd(), wDate: self.dateToAdd(), stime: self.stimeToAdd(), etime:self.etimeToAdd()};
                     self.worklist.push(obj);
-                    self.examToAdd("");
+                    self.workToAdd("");
                     self.dateToAdd(""); 
                 }
             };
 
-            self.removeExam = function(itm){
+            self.removeWorkItem = function(itm){
                 self.worklist.remove(itm);
             };
 
 
-        }
+        };
         ko.applyBindings(new WorkViewModel(workarray));
     //formatting
 
