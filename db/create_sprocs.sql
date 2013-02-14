@@ -266,7 +266,52 @@ BEGIN
 		commit;
 	END IF;
 END$$
+
+
+# (username, workID, job, prio, startdate, enddate)
+DROP PROCEDURE IF EXISTS storeuserwork$$
+CREATE PROCEDURE storeuserwork (username varchar(20), wid int(11), job varchar(25), prio tinyint(4), startdate varchar(25), enddate varchar(25))
+BEGIN
 	
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
+
+	SET @alreadythere = (EXISTS (SELECT * FROM `works` WHERE `IID` = wid));
+	#SELECT @alreadythere;
+	
+	IF @alreadythere THEN
+		SELECT `items`.`Complete_by`, `items`.`Priority`
+				INTO @enddate, @prio
+			FROM `items` WHERE `IID` = wid GROUP BY `items`.`IID`;
+		SELECT `works`.`start_time`
+				INTO @startdate
+			FROM `works` WHERE `IID` = wid GROUP BY `works`.`IID`;
+
+		IF (prio != @prio) THEN
+			UPDATE `items` SET `Priority` = prio WHERE `IID` = wid AND `SID` = @SID;
+		END IF;
+
+		IF (startdate != @startdate) THEN
+			UPDATE `works` SET `Name` = aname WHERE `IID` = wid;
+			commit;
+		END IF;
+
+		IF (enddate != @enddate) THEN
+			UPDATE `items` SET `Complete_by` = DATE(enddate) WHERE `IID` = wid AND `SID` = @SID;
+			commit;
+		END IF;
+	ELSE
+		insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Difficulty`)
+					 values (@SID, 0, DATE(enddate), prio, 0);
+		commit;
+		
+		select LAST_INSERT_ID() INTO @liid;
+		insert into `works` (`IID`, `Start_time`)
+						values (@liid, startdate);
+		commit;
+	END IF;
+END$$
+
 
 delimiter ;
 

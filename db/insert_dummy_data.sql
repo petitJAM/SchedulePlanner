@@ -9,11 +9,16 @@ DELETE FROM teachers WHERE TID > 0;
 # And in with the new!
 
 insert into `teachers` (`TID`, `Name`, `Department`, `Difficulty`)
+				values (0, 'None', 'None', 0);
+insert into `teachers` (`TID`, `Name`, `Department`, `Difficulty`)
 				values (1, 'Nadine Shillingford', 'CSSE', 3);
 insert into `teachers` (`TID`, `Name`, `Department`, `Difficulty`)
 				values (2, 'Langley', 'MA', 3);
 insert into `teachers` (`TID`, `Name`, `Department`, `Difficulty`)
 				values (3, 'Steve Chenoweth', 'CSSE', 2);
+
+insert into `courses`  (`CID`, `TID`, `Name`, `Start_time`, `End_time`, `Difficulty`)
+				values (0, 0, 'work_filler', TIME('0:00'), TIME('0:00'), 0);
 
 insert into `courses`  (`TID`, `Name`, `Start_time`, `End_time`, `Difficulty`)
 				values (1, 'Databases', TIME('8:05'), TIME('9:50'), 2);
