@@ -106,7 +106,11 @@
 		}
 		var usercourses = getUserCourses();
 		var allcourses = getAllCourses();
+		console.log("Printing usercourses");
 		console.log(usercourses);
+
+		console.log("Printing allcourses");
+		console.log(allcourses);
 
 		function UserCourse (name, diff,cid){
 			var self = this;
@@ -141,6 +145,7 @@
 		}
 		var usercoursesarray = parseUserCourses(usercourses);
 		var allcoursesarray = parseAllCourses(allcourses);
+		console.log("Printing usercoursesarray");
 		console.log(usercoursesarray);
 		
 		function CourseViewModel(usercoursesarray, allcoursesarray){

@@ -9,7 +9,6 @@ db = MySQLdb.connect(host = "localhost",
                      passwd ="password123",
                      db ="scheduleplanner",
                      cursorclass=MySQLdb.cursors.DictCursor)
-cur = db.cursor()
 
 def addUser(username,email,password):
     cur = db.cursor()
@@ -114,7 +113,6 @@ def getAllCourses():
     cur.close()
     return results;
 
-
 def getUserActiveScheduleID(username):
     cur = db.cursor()
     cur.execute("SELECT Active_SID FROM users WHERE name = %s", username)
@@ -123,14 +121,13 @@ def getUserActiveScheduleID(username):
     cur.close()
     return result
 
-
 def storeUserCourses(sid, cid, diff):
     cur = db.cursor()
     cur.callproc('addcoursetoschedule', (sid,cid,diff))
     cur.close()
 
 def removeAllCourses(sid,cid):
-    cur=db.cursor()
+    cur = db.cursor()
     cur.callproc('removeallcoursesfromuserschedule', (sid, cid))
     cur.nextset()
     cur.close()
