@@ -78,14 +78,14 @@ def storeUserAssignments(username, aID, aName, aCID, aDiff, aDate):
     cur.callproc('storeuserassignments',(username, aID, aName, aCID, aDiff, aDate))
     cur.close()
 
-def storeUserExams(username, eID, eCID, eDiff, eDate):
+def storeUserExams(username, eID, eCID, eDate):
     cur = db.cursor()
-    cur.callproc('storeuserexams', (username, eID, eCID, eDiff, eDate))
+    cur.callproc('storeuserexams', (username, eID, eCID, 0, eDate))
     cur.close()
 
-def storeUserWork(username, wID, wDate):
+def storeUserWork(username, wID, wStartTime, wEndTime):
     cur = db.cursor()
-    cur.callproc('storeuserwork', (username, wID, wCID, wDate))
+    cur.callproc('storeuserwork', (username, wID, wCID, wStartTime, wEndTime))
     cur.close()
 
 def storeUserReminders(username, rID, rDate):

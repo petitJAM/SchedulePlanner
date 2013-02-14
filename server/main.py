@@ -130,8 +130,8 @@ class ExamHandler(TemplateHandler):
         username = self.request.get('username')
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
-        for i in range(0, len(data['itemslist'])):
-            storeUserExams(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+        for item in data['examslist']:
+            storeUserExams(username, item['itemID'], item['examCourse']['courseID'], item['examDate'])
             
         # update
         print self.request.get('courses')
@@ -155,8 +155,8 @@ class WorkHandler(TemplateHandler):
         username = self.request.get('username')
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
-        for i in range(0, len(data['itemslist'])):
-            storeUserWork(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+        for item in data['itemslist']:
+            storeUserWork(username, item[i]['itemID'], item[i]['itemDiff']['diff'], item[i]['itemDate'])
             
         # update
         print self.request.get('courses')
@@ -178,8 +178,8 @@ class ReminderHandler(TemplateHandler):
         username = self.request.get('username')
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
-        for i in range(0, len(data['itemslist'])):
-            storeUserReminders(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+        for item in data['itemslist']:
+            storeUserReminders(username, item['itemID'], item['itemDiff']['diff'], item['itemDate'])
             
         # update
         print self.request.get('courses')
@@ -204,8 +204,8 @@ class MeetingHandler(TemplateHandler):
         username = self.request.get('username')
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
-        for i in range(0, len(data['itemslist'])):
-            storeUserMeetings(username, data['itemslist'][i]['itemID'], data['itemslist'][i]['itemCourse']['courseID'], data['itemslist'][i]['itemDiff']['diff'], data['itemslist'][i]['itemDate'])
+        for item in data['itemslist']:
+            storeUserMeetings(username, item['itemID'], item['itemCourse']['courseID'], item['itemDiff']['diff'], item['itemDate'])
             
         # update
         print self.request.get('courses')
