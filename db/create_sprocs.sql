@@ -322,6 +322,104 @@ BEGIN
 END$$
 
 
+# (username, reminderID, remindertext, prio, rduedate)
+DROP PROCEDURE IF EXISTS storeuserreminder$$
+CREATE PROCEDURE storeuserreminder (username varchar(20), rid int(11), remindertext text, prio tinyint(4), rduedate varchar(25))
+BEGIN
+	
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
+
+	SET @alreadythere = (EXISTS (SELECT * FROM `reminders` WHERE `IID` = rid));
+	#SELECT @alreadythere;
+	
+	IF @alreadythere THEN
+		SELECT `items`.`Complete_by`, `items`.`Priority`, `items`.`Notes`
+				INTO @rduedate, @prio, @remindertext
+			FROM `items` WHERE `IID` = rid GROUP BY `items`.`IID`;
+
+		IF (remindertext != @remindertext) THEN
+			UPDATE `items` SET `Notes` = remindertext WHERE `IID` = rid AND `SID` = @SID;
+			commit;
+		END IF;
+
+		IF (prio != @prio) THEN
+			UPDATE `items` SET `Priority` = prio WHERE `IID` = rid AND `SID` = @SID;
+			commit;
+		END IF;
+
+		IF (rduedate != @rduedate) THEN
+			UPDATE `items` SET `Complete_by` = DATE(rduedate) WHERE `IID` = rid AND `SID` = @SID;
+			commit;
+		END IF;
+	ELSE
+		# hack
+		select `CID` into @hackcid from `courses` limit 1;
+	
+		insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Difficulty`, `Notes`)
+					 values (@SID, @hackcid, DATE(rduedate), prio, 0, remindertext);
+		commit;
+		
+		select LAST_INSERT_ID() INTO @liid;
+		insert into `reminders` (`IID`)
+						values (@liid);
+		commit;
+	END IF;
+END$$
+
+
+# (username, meetingID, subject, prio, mduedate)
+DROP PROCEDURE IF EXISTS storeusermeetings$$
+CREATE PROCEDURE storeusermeetings (username varchar(20), mid int(11), mcid int(11), subject varchar(45), prio tinyint(4), mduedate varchar(25))
+BEGIN
+	
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
+
+	SET @alreadythere = (EXISTS (SELECT * FROM `meetings` WHERE `IID` = mid));
+	#SELECT @alreadythere;
+	
+	IF @alreadythere THEN
+		SELECT `items`.`Complete_by`, `items`.`Priority`, `items`.`CID`
+				INTO @mduedate, @prio, @mcid
+			FROM `items` WHERE `IID` = mid GROUP BY `items`.`IID`;
+
+		SELECT `meetings`.`Subject`
+				INTO @subject
+			FROM `meetings` WHERE `IID` = mid GROUP BY `meetings`.`IID`;
+
+		IF (subject != @subject) THEN
+			UPDATE `meetings` SET `Subject` = subject WHERE `IID` = mid AND `SID` = @SID;
+			commit;
+		END IF;
+
+		IF (mcid != @mcid) THEN
+			UPDATE `items` SET `CID` = mcid WHERE `IID` = mid AND `SID`;
+			commit;
+		END IF;
+
+		IF (prio != @prio) THEN
+			UPDATE `items` SET `Priority` = prio WHERE `IID` = mid AND `SID` = @SID;
+			commit;
+		END IF;
+
+		IF (mduedate != @mduedate) THEN
+			UPDATE `items` SET `Complete_by` = DATE(mduedate) WHERE `IID` = mid AND `SID` = @SID;
+			commit;
+		END IF;
+	ELSE
+		insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Difficulty`, `Notes`)
+					 values (@SID, mcid, DATE(mduedate), prio, 0, subject);
+		commit;
+		
+		select LAST_INSERT_ID() INTO @liid;
+		insert into `meetings` (`IID`)
+						values (@liid);
+		commit;
+	END IF;
+END$$
+
+
 delimiter ;
 
 /*
