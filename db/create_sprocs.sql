@@ -268,6 +268,51 @@ BEGIN
 END$$
 
 
+# (username, examID, CID, Prio, Diff, Date)
+DROP PROCEDURE IF EXISTS storeuserexams$$
+CREATE PROCEDURE storeuserexams (username varchar(20), eid int(11),	ecid varchar(45), prio tinyint(4), diff tinyint(4), examdate varchar(25))
+BEGIN
+	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
+	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
+
+	SET @alreadythere = (EXISTS (SELECT * FROM `exams` WHERE `IID` = eid));
+	#SELECT @alreadythere;
+	
+	IF @alreadythere THEN
+		SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
+				INTO @duedate, @course, @diff, @cid
+			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = eid GROUP BY `items`.`IID`;
+
+		UPDATE `exams` SET `Name` = aname WHERE `IID` = eid;
+		commit;
+
+		IF (diff != @diff)THEN
+			UPDATE `items` SET `Difficulty` = diff WHERE `SID` = @SID AND `IID` = eid;
+			commit;
+		END IF;
+
+		IF (examdate != @duedate) THEN
+			UPDATE `items` SET `Complete_by` = DATE(examdate) WHERE `SID` = @SID AND `IID` = eid;
+			commit;
+		END IF;
+
+		IF (ecid != @cid) THEN
+			UPDATE `items` SET `CID` = ecid WHERE `SID` = @SID AND `IID` = eid;
+			commit;
+		END IF;
+	ELSE
+		insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Difficulty`)
+					 values (@SID, ecid, DATE(examdate), prio, diff);
+		commit;
+		
+		select LAST_INSERT_ID() INTO @liid;
+		insert into `exams` (`IID`, `Name`)
+						values (@liid, aname);
+		commit;
+	END IF;
+END$$
+
+
 # (username, workID, job, prio, startdate, enddate)
 DROP PROCEDURE IF EXISTS storeuserwork$$
 CREATE PROCEDURE storeuserwork (username varchar(20), wid int(11), job varchar(25), prio tinyint(4), startdate varchar(25), enddate varchar(25))
