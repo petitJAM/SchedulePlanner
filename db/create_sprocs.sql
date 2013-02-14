@@ -1,4 +1,4 @@
-exams/*
+/*
  * Create stored procedures
  *
  */
@@ -267,88 +267,60 @@ BEGIN
 	END IF;
 END$$
 
-DROP PROCEDURE IF EXISTS storeuserexams$$
-CREATE PROCEDURE storeuserexams (username varchar(20), aid int(11), aname varchar(45), 
-	acid varchar(45), aduedate varchar(25))
+
+# (username, workID, job, prio, startdate, enddate)
+DROP PROCEDURE IF EXISTS storeuserwork$$
+CREATE PROCEDURE storeuserwork (username varchar(20), wid int(11), job varchar(25), prio tinyint(4), startdate varchar(25), enddate varchar(25))
 BEGIN
 	
 	SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
 	SELECT `UID` INTO @UID FROM `users` WHERE `Name` = username;
 
-	SET @alreadythere = (EXISTS (SELECT * FROM `exams` WHERE `IID` = aid));
+	SET @alreadythere = (EXISTS (SELECT * FROM `works` WHERE `IID` = wid));
 	#SELECT @alreadythere;
 	
 	IF @alreadythere THEN
-		SELECT `items`.`Complete_by`,  `courses`.`Name`, `items`.`CID` 
-				INTO @duedate, @course, @cid
-			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid GROUP BY `items`.`IID`;
+		SELECT `items`.`Complete_by`, `items`.`Priority`, `items`.`Notes`
+				INTO @enddate, @prio, @job
+			FROM `items` WHERE `IID` = wid GROUP BY `items`.`IID`;
+		SELECT `works`.`start_time`
+				INTO @startdate
+			FROM `works` WHERE `IID` = wid GROUP BY `works`.`IID`;
 
-		UPDATE `exams` SET `Name` = aname WHERE `IID` = aid;
-		commit;
-
-		IF (aduedate != @duedate) THEN
-			UPDATE `items` SET `Complete_by` = DATE(aduedate) WHERE `SID` = @SID AND `IID` = aid;
+		IF (job != @job) THEN
+			UPDATE `items` SET `Notes` = job WHERE `IID` = wid AND `SID` = @SID;
 			commit;
 		END IF;
 
-		IF (acid != @cid) THEN
-			UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
+		IF (prio != @prio) THEN
+			UPDATE `items` SET `Priority` = prio WHERE `IID` = wid AND `SID` = @SID;
+			commit;
+		END IF;
+
+		IF (startdate != @startdate) THEN
+			UPDATE `works` SET `Start_time` = startdate WHERE `IID` = wid;
+			commit;
+		END IF;
+
+		IF (enddate != @enddate) THEN
+			UPDATE `items` SET `Complete_by` = DATE(enddate) WHERE `IID` = wid AND `SID` = @SID;
 			commit;
 		END IF;
 	ELSE
-		insert into `items` (`SID`, `CID`, `Complete_by`)
-					 values (@SID, acid, DATE(aduedate));
+		# hack
+		select `CID` into @hackcid from `courses` limit 1;
+	
+		insert into `items` (`SID`, `CID`, `Complete_by`, `Priority`, `Difficulty`, `Notes`)
+					 values (@SID, @hackcid, DATE(enddate), prio, 0, job);
 		commit;
 		
 		select LAST_INSERT_ID() INTO @liid;
-		insert into `exams` (`IID`, `Name`)
-						values (@liid, aname);
+		insert into `works` (`IID`, `Start_time`)
+						values (@liid, startdate);
 		commit;
 	END IF;
 END$$
 
-/*
-DROP PROCEDURE IF EXISTS storeuserassignments$$
-CREATE PROCEDURE storeuserassignments (username varchar(20), aid int(11),
- aname varchar(45), acid varchar(45), adiff tinyint(4), aduedate varchar(25))
-BEGIN
-
-	IF (EXISTS (SELECT * FROM `assignments` WHERE `IID` = aid)) THEN
-		SELECT `Active_SID` INTO @SID FROM `users` WHERE `Name` = username;
-		
-		SELECT `items`.`Complete_by`,  `courses`.`Name`,`items`.`Difficulty`, `items`.`CID` 
-				INTO @duedate, @course, @diff, @cid
-			FROM `items`, `courses` WHERE `SID` = @SID AND `IID` = aid GROUP BY `items`.`IID`;
-		
-		UPDATE `assignments` SET `Name` = aname WHERE `IID` = aid;
-		commit;
-
-		IF (adiff != @diff)THEN
-			UPDATE `items` SET `Difficulty` = adiff WHERE `SID` = @SID AND `IID` = aid;
-			commit;
-		END IF;
-
-		IF (aduedate != @duedate) THEN
-			UPDATE `items` SET `Complete_by` = aduedate WHERE `SID` = @SID AND `IID` = aid;
-			commit;
-		END IF;
-
-		IF (acid != @cid) THEN
-			UPDATE `items` SET `CID` = acid WHERE `SID` = @SID AND `IID` = aid;
-			commit;
-		END IF;
-	ELSE
-		# new
-		INSERT INTO `assignments` (`Name`) VALUES (aname);
-		commit;
-		INSERT INTO `items` (`SID`, `CID`, `Difficulty`, `Complete_by`)
-					 VALUES (@SID, acid, adiff, DATE(aduedate));
-		commit;
-	END IF;
-	
-
-END$$
-	
 
 delimiter ;
 
