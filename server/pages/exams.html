@@ -38,19 +38,34 @@
 
 	<div class="container-fluid content">
 		<h1></h1>
-		<form method="post">
-			<table data-bind="visible: itemslist().length>=0">
+		<form data-bind="submit: addExam">
+			<table>
 				<thead>
 					<tr>
-						<th><font size="5">Course</font></th>
-						<th><font size ="5">Date</font></th>
+						<th><font size ="5">Exam For Course</font></th>
+						<th><font size ="5">Date of Exam</font></th>
 					</tr>
 				</thead>
-				<tbody data-bind='foreach: itemslist'>
+				<tbody>
 					<tr>
-						<td><select data-bind="options: $root.courses, value: itemCourse, optionsText: 'cName' "></select></td>
+						<td><select data-bind="options: givencourses, value: examToAdd, optionsText: 'cName' "></select></td>
+						<td><input style="height:30px;" type="date" data-bind="value:dateToAdd"></input></td>
+						<td><button class="btn btn-info" type="submit">Add Exam </button></td>
+					</tr>
+				</tbody>
+			</table>
+			<table data-bind="visible: examslist().length>=0">
+				<thead>
+					<tr>
+						<th><font size="5">Stored Exams</font></th>
+						<th><font size ="5">Stored Dates</font></th>
+					</tr>
+				</thead>
+				<tbody data-bind='foreach: examslist'>
+					<tr>
+						<td><input disabled data-bind="value: examCourse"></input></td>
 
-						<td><input style="height:30px;" type="date" name="duedate"></input></td>
+						<td><input disabled data-bind="value: examDate"></input></td>
 
 						<td><a href='#' data-bind='click: $root.removeExam'><button type="button" class="btn btn-info">Delete</button></a></td>
 
@@ -58,10 +73,10 @@
 					</tr>
 				</tbody>
 			</table>
-			<a href='#' data-bind='click: $root.addExam'><button type="button" class="btn btn-info" data-toggle="button">Add Item</button></a>
+		</form>
+		<form method="post">
 			<textarea data-bind="text:ko.toJSON($root, null, 2)" name ="bunchesofdata" style="visibility: ;"></textarea>
 			<input class="btn" type="submit"></input>
-
 		</form>
 	</div>
 	
@@ -94,14 +109,12 @@
 			return items
 		};
 		var usercourses = getUserCourses();
-
-		// console.log(items);
-
-		function Item(course, date){
+		console.log(items);
+		function Exam(course, date){
 			var self = this;
 
-			self.itemCourse = ko.observable(course);
-			self.itemDate = ko.observable(date);
+			self.examCourse = ko.observable(course);
+			self.examDate = ko.observable(date);
 			//self.itemPriority = ko.computed();
 		}
 		function UserCourse (name, diff){
@@ -113,7 +126,7 @@
 		function parseExams(exams){
 			itmlist =[];
 			for(var i=0; i<items.length; i++){
-				itmlist.push(new Item(items[i].CourseName, items[i].Date));
+				itmlist.push(new Exam(items[i].CourseName, items[i].Date));
 			}
 			return itmlist;
 		}
@@ -125,33 +138,35 @@
 			});
 			//console.log(cList);
 			return cList;
-
 		}
-
-
-		var itemsarray = parseExams(items);
+		var examsarray = parseExams(items);
 		var coursesarray = parseUserCourses(usercourses);
 		console.log(coursesarray);
-		function ItemViewModel (itemsarray, coursesarray){
-			var self =this;
-			self.courses = coursesarray;
 
-			self.itemslist = ko.observableArray(itemsarray);
+		function ExamViewModel (examsarray, coursesarray){
+			var self =this;
+			self.givencourses = coursesarray;
+			self.examslist = ko.observableArray(examsarray);
+
+			self.examToAdd = ko.observable("");
+			self.dateToAdd = ko.observable("");
 
 			self.addExam = function() {
-				self.itemslist.push(new Item(self.courses[0], new Date()));
-			}
+				if(self.examToAdd()!="" && self.dateToAdd !=""){
+					obj = {examCourse: self.examToAdd().cName, examDate: self.dateToAdd()};
+					self.examslist.push(obj);
+					self.examToAdd("");
+					self.dateToAdd("");	
+				}
+			};
 
 			self.removeExam = function(itm){
-				self.itemslist.remove(itm)
-			}
+				self.examslist.remove(itm);
+			};
 
-			self.submitMe = function() {
-				// gather myself for posting
-				return ko.toJSON($root, null, 2);
-			}
+
 		}
-		ko.applyBindings(new ItemViewModel(itemsarray, coursesarray));
+		ko.applyBindings(new ExamViewModel(examsarray, coursesarray));
 	//formatting
 
 	
