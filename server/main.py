@@ -144,9 +144,11 @@ class ExamHandler(TemplateHandler):
 class WorkHandler(TemplateHandler):
     def get(self):
         username = self.request.get('username')
-        schedule = getUserWork(username)
-        jsonschedule = json.dumps(schedule, default=dthandler)
-        inserts={'username': username, 'items':jsonschedule}
+        exams = getUserExams(username)
+        jsonexams = json.dumps(exams, default=dthandler)
+        usercourses = getUserCourses(username)
+        jsonUserCourses = json.dumps(usercourses, default=dthandler)
+        inserts={'username': username, 'items':jsonexams, 'usercourses':jsonUserCourses}
         self.renderFile("work.html", **inserts)
 
 class ReminderHandler(TemplateHandler):
