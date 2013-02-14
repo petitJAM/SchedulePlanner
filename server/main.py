@@ -131,7 +131,7 @@ class ExamHandler(TemplateHandler):
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
         for item in data['examslist']:
-            storeUserExams(username, item['itemID'], item['examCourse']['courseID'], item['examDate'])
+            storeUserExams(username, item['examID'], item['examCourse']['courseID'], item['examDate'])
             
         # update
         print self.request.get('courses')
@@ -156,7 +156,7 @@ class WorkHandler(TemplateHandler):
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
         for item in data['itemslist']:
-            storeUserWork(username, item[i]['itemID'], item[i]['itemDiff']['diff'], item[i]['itemDate'])
+            storeUserWork(username, item[i]['workID'], item[i]['itemDiff']['diff'], item[i]['itemDate'])
             
         # update
         print self.request.get('courses')
@@ -179,7 +179,7 @@ class ReminderHandler(TemplateHandler):
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
         for item in data['itemslist']:
-            storeUserReminders(username, item['itemID'], item['itemDiff']['diff'], item['itemDate'])
+            storeUserReminders(username, item['reminderID'], item['remindertext'], item['itemDate'])
             
         # update
         print self.request.get('courses')
@@ -205,7 +205,7 @@ class MeetingHandler(TemplateHandler):
         data = self.request.get('bunchesofdata')
         data = json.loads(data)
         for item in data['itemslist']:
-            storeUserMeetings(username, item['itemID'], item['itemCourse']['courseID'], item['itemDiff']['diff'], item['itemDate'])
+            storeUserMeetings(username, item['meetingID'], item['subject'], item['itemDate'])
             
         # update
         print self.request.get('courses')
