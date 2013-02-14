@@ -306,8 +306,8 @@ BEGIN
 		commit;
 		
 		select LAST_INSERT_ID() INTO @liid;
-		insert into `exams` (`IID`, `Name`)
-						values (@liid, aname);
+		insert into `exams` (`IID`)
+						values (@liid);
 		commit;
 	END IF;
 END$$
